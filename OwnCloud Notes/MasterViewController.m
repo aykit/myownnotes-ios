@@ -32,8 +32,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
@@ -41,29 +39,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)insertNewObject:(id)sender
-{
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
-    [newManagedObject setValue:modifiedDate forKey:@"modified"];
-    [newManagedObject setValue:@"title" forKey:@"title"];
-    [newManagedObject setValue:@"content" forKey:@"content"];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
 }
 
 #pragma mark - Table View
@@ -124,26 +99,29 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSManagedObjectContext *editContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [editContext setParentContext:self.managedObjectContext];
+    
+    DetailViewController* nextViewController = [segue destinationViewController];
+    nextViewController.delegate = self;
+
+    nextViewController.managedObjectContext = editContext;
+    
+    Note* note;
+    
     if ([[segue identifier] isEqualToString:@"addNote"]) {
+        note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:editContext];
+        note.modified = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     }
     
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        // Create a new managed object context for the new book; set its parent to the fetched results controller's context.
-        NSManagedObjectContext *addingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        [addingContext setParentContext:self.managedObjectContext];
-        
-        DetailViewController* nextViewController = [segue destinationViewController];
-        nextViewController.delegate = self;
-
-        
+    if ([[segue identifier] isEqualToString:@"editNote"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Note *selecteDNote = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [nextViewController setDetailItem:selecteDNote];
-        
-//        Note *newNote = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:addingContext];
-//        [nextViewController setDetailItem:newNote];
-        nextViewController.managedObjectContext = addingContext;
+        note = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     }
+    
+    [nextViewController setDetailItem:note];
+    
+    
 }
 
 #pragma mark - Fetched results controller
@@ -270,8 +248,8 @@
          This means that any edits that are made don't affect the application's main managed object context -- it's a way of keeping disjoint edits in a separate scratchpad. Saving changes to that context, though, only push changes to the fetched results controller's context. To save the changes to the persistent store, you have to save the fetch results controller's context as well.
          */
         NSError *error;
-        NSManagedObjectContext *addingManagedObjectContext = [controller managedObjectContext];
-        if (![addingManagedObjectContext save:&error]) {
+        NSManagedObjectContext *editManagedObjectContext = [controller managedObjectContext];
+        if (![editManagedObjectContext save:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
              

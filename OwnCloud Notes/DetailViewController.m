@@ -55,13 +55,10 @@
 {
     [super viewDidLoad];
     
-    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveObject:)];
-    self.navigationItem.rightBarButtonItem = saveButton;
-    
     [self configureView];
 }
 
-- (void) saveObject:(id)sender
+- (void) saveAndClose:(id)sender
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     

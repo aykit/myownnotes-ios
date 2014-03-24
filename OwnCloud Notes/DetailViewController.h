@@ -21,6 +21,9 @@
 
 @property (nonatomic, weak) id <DetailViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+
+-(IBAction) saveAndClose:(id)sender;
+
 @end
 
 @protocol DetailViewControllerDelegate
