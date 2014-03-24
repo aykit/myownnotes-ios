@@ -26,6 +26,8 @@
 		8DDC088A18DD909E0062CC13 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDC086218DD909E0062CC13 /* CoreData.framework */; };
 		8DDC089218DD909E0062CC13 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8DDC089018DD909E0062CC13 /* InfoPlist.strings */; };
 		8DDC089418DD909E0062CC13 /* OwnCloud_NotesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DDC089318DD909E0062CC13 /* OwnCloud_NotesTests.m */; };
+		8DDC08A318E0362E0062CC13 /* Note.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DDC08A218E0362E0062CC13 /* Note.m */; };
+		8DDC08A418E0362E0062CC13 /* Note.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DDC08A218E0362E0062CC13 /* Note.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		8DDC088F18DD909E0062CC13 /* OwnCloud NotesTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OwnCloud NotesTests-Info.plist"; sourceTree = "<group>"; };
 		8DDC089118DD909E0062CC13 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DDC089318DD909E0062CC13 /* OwnCloud_NotesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OwnCloud_NotesTests.m; sourceTree = "<group>"; };
+		8DDC08A118E0362E0062CC13 /* Note.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Note.h; path = ../Note.h; sourceTree = "<group>"; };
+		8DDC08A218E0362E0062CC13 /* Note.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Note.m; path = ../Note.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,8 @@
 		8DDC086418DD909E0062CC13 /* OwnCloud Notes */ = {
 			isa = PBXGroup;
 			children = (
+				8DDC08A118E0362E0062CC13 /* Note.h */,
+				8DDC08A218E0362E0062CC13 /* Note.m */,
 				8DDC086D18DD909E0062CC13 /* AppDelegate.h */,
 				8DDC086E18DD909E0062CC13 /* AppDelegate.m */,
 				8DDC087018DD909E0062CC13 /* Main_iPhone.storyboard */,
@@ -270,6 +276,7 @@
 				8DDC087E18DD909E0062CC13 /* DetailViewController.m in Sources */,
 				8DDC087B18DD909E0062CC13 /* MasterViewController.m in Sources */,
 				8DDC086F18DD909E0062CC13 /* AppDelegate.m in Sources */,
+				8DDC08A318E0362E0062CC13 /* Note.m in Sources */,
 				8DDC086B18DD909E0062CC13 /* main.m in Sources */,
 				8DDC087818DD909E0062CC13 /* OwnCloud_Notes.xcdatamodeld in Sources */,
 			);
@@ -280,6 +287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DDC089418DD909E0062CC13 /* OwnCloud_NotesTests.m in Sources */,
+				8DDC08A418E0362E0062CC13 /* Note.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,6 +494,7 @@
 				8DDC089918DD909E0062CC13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8DDC089A18DD909E0062CC13 /* Build configuration list for PBXNativeTarget "OwnCloud NotesTests" */ = {
 			isa = XCConfigurationList;
@@ -494,6 +503,7 @@
 				8DDC089C18DD909E0062CC13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

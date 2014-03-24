@@ -36,15 +36,40 @@
     // Update the user interface for the detail item.
 
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [[self.detailItem valueForKey:@"timeStamp"] description];
+        
+        self.title = self.detailItem.title;
+        
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormat setTimeStyle:NSDateFormatterMediumStyle];
+        NSNumber *unixtimestamp = [self.detailItem modified];
+        NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
+        self.detailDateLabel.text = [dateFormat stringFromDate:date];
+        
+        self.detailTitleTextField.text = [self.detailItem title];
+        self.detailContentTextField.text = [self.detailItem content];
     }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveObject:)];
+    self.navigationItem.rightBarButtonItem = saveButton;
+    
     [self configureView];
+}
+
+- (void) saveObject:(id)sender
+{
+    NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+    
+    self.detailItem.title = self.detailTitleTextField.text;
+    self.detailItem.content = self.detailContentTextField.text;
+    self.detailItem.modified = modifiedDate;
+    
+    [self.delegate detailViewController:self didFinishWithSave:YES];
 }
 
 - (void)didReceiveMemoryWarning

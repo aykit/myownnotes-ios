@@ -9,6 +9,7 @@
 #import "MasterViewController.h"
 
 #import "DetailViewController.h"
+#import "Note.h"
 
 @interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -50,7 +51,10 @@
     
     // If appropriate, configure the new managed object.
     // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
+    NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+    [newManagedObject setValue:modifiedDate forKey:@"modified"];
+    [newManagedObject setValue:@"title" forKey:@"title"];
+    [newManagedObject setValue:@"content" forKey:@"content"];
     
     // Save the context.
     NSError *error = nil;
@@ -113,17 +117,32 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        Note *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         self.detailViewController.detailItem = object;
     }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    if ([[segue identifier] isEqualToString:@"addNote"]) {
+    }
+    
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
+        // Create a new managed object context for the new book; set its parent to the fetched results controller's context.
+        NSManagedObjectContext *addingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [addingContext setParentContext:self.managedObjectContext];
+        
+        DetailViewController* nextViewController = [segue destinationViewController];
+        nextViewController.delegate = self;
+
+        
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[segue destinationViewController] setDetailItem:object];
+        Note *selecteDNote = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        [nextViewController setDetailItem:selecteDNote];
+        
+//        Note *newNote = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:addingContext];
+//        [nextViewController setDetailItem:newNote];
+        nextViewController.managedObjectContext = addingContext;
     }
 }
 
@@ -137,14 +156,14 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Note" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modified" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -228,8 +247,53 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateStyle:NSDateFormatterShortStyle];
+    
+    Note *note = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = note.title;
+    NSNumber *unixtimestamp = note.modified;
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
+    cell.detailTextLabel.text = [dateFormat stringFromDate:date];
+}
+
+# pragma mark - Delegation
+
+/*
+ Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new book.
+ */
+- (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
+    
+    if (save) {
+        /*
+         The new book is associated with the add controller's managed object context.
+         This means that any edits that are made don't affect the application's main managed object context -- it's a way of keeping disjoint edits in a separate scratchpad. Saving changes to that context, though, only push changes to the fetched results controller's context. To save the changes to the persistent store, you have to save the fetch results controller's context as well.
+         */
+        NSError *error;
+        NSManagedObjectContext *addingManagedObjectContext = [controller managedObjectContext];
+        if (![addingManagedObjectContext save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        if (![[self.fetchedResultsController managedObjectContext] save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
+    
+    // Dismiss the modal view to return to the main list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
