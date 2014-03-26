@@ -8,6 +8,7 @@
 
 #import "MasterViewController.h"
 
+#import "SettingsViewController.h"
 #import "DetailViewController.h"
 #import "Note.h"
 
@@ -29,16 +30,31 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (![[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL]) {
+        [self showSettings:nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)showSettings:(id)sender
+{
+    UIStoryboard *storyboard = self.storyboard;
+    UINavigationController* nav = [storyboard instantiateViewControllerWithIdentifier:@"settings"];
+    
+    
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - Table View

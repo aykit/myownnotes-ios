@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D824A6318E2DD6C00A4B0D5 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6218E2DD6C00A4B0D5 /* Constants.m */; };
+		8D824A6418E2DD6C00A4B0D5 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6218E2DD6C00A4B0D5 /* Constants.m */; };
+		8D824A6718E2DF4800A4B0D5 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6618E2DF4800A4B0D5 /* SettingsViewController.m */; };
+		8D824A6818E2DF4800A4B0D5 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6618E2DF4800A4B0D5 /* SettingsViewController.m */; };
+		8D824A6B18E2E06200A4B0D5 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */; };
+		8D824A6C18E2E06200A4B0D5 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */; };
 		8DDC085D18DD909E0062CC13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDC085C18DD909E0062CC13 /* Foundation.framework */; };
 		8DDC085F18DD909E0062CC13 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDC085E18DD909E0062CC13 /* CoreGraphics.framework */; };
 		8DDC086118DD909E0062CC13 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDC086018DD909E0062CC13 /* UIKit.framework */; };
@@ -41,6 +47,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8D824A6118E2DD6000A4B0D5 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		8D824A6218E2DD6C00A4B0D5 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		8D824A6518E2DF4800A4B0D5 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		8D824A6618E2DF4800A4B0D5 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		8D824A6918E2E06200A4B0D5 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OwnCloud Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DDC085C18DD909E0062CC13 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8DDC085E18DD909E0062CC13 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -137,11 +149,17 @@
 				8DDC087318DD909E0062CC13 /* Main_iPad.storyboard */,
 				8DDC087918DD909E0062CC13 /* MasterViewController.h */,
 				8DDC087A18DD909E0062CC13 /* MasterViewController.m */,
+				8D824A6518E2DF4800A4B0D5 /* SettingsViewController.h */,
+				8D824A6618E2DF4800A4B0D5 /* SettingsViewController.m */,
+				8D824A6918E2E06200A4B0D5 /* KeychainItemWrapper.h */,
+				8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */,
 				8DDC087C18DD909E0062CC13 /* DetailViewController.h */,
 				8DDC087D18DD909E0062CC13 /* DetailViewController.m */,
 				8DDC087F18DD909E0062CC13 /* Images.xcassets */,
 				8DDC087618DD909E0062CC13 /* OwnCloud_Notes.xcdatamodeld */,
 				8DDC086518DD909E0062CC13 /* Supporting Files */,
+				8D824A6118E2DD6000A4B0D5 /* Constants.h */,
+				8D824A6218E2DD6C00A4B0D5 /* Constants.m */,
 			);
 			path = "OwnCloud Notes";
 			sourceTree = "<group>";
@@ -276,9 +294,12 @@
 				8DDC087E18DD909E0062CC13 /* DetailViewController.m in Sources */,
 				8DDC087B18DD909E0062CC13 /* MasterViewController.m in Sources */,
 				8DDC086F18DD909E0062CC13 /* AppDelegate.m in Sources */,
+				8D824A6718E2DF4800A4B0D5 /* SettingsViewController.m in Sources */,
 				8DDC08A318E0362E0062CC13 /* Note.m in Sources */,
 				8DDC086B18DD909E0062CC13 /* main.m in Sources */,
+				8D824A6318E2DD6C00A4B0D5 /* Constants.m in Sources */,
 				8DDC087818DD909E0062CC13 /* OwnCloud_Notes.xcdatamodeld in Sources */,
+				8D824A6B18E2E06200A4B0D5 /* KeychainItemWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +309,9 @@
 			files = (
 				8DDC089418DD909E0062CC13 /* OwnCloud_NotesTests.m in Sources */,
 				8DDC08A418E0362E0062CC13 /* Note.m in Sources */,
+				8D824A6418E2DD6C00A4B0D5 /* Constants.m in Sources */,
+				8D824A6C18E2E06200A4B0D5 /* KeychainItemWrapper.m in Sources */,
+				8D824A6818E2DF4800A4B0D5 /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
