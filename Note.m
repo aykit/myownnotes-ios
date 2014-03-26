@@ -11,9 +11,8 @@
 
 @implementation Note
 
+@dynamic title;
 @dynamic content;
 @dynamic modified;
-@dynamic remote_id;
-@dynamic title;
 
 @end

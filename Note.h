@@ -12,9 +12,8 @@
 
 @interface Note : NSManagedObject
 
+@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * content;
 @property (nonatomic, retain) NSNumber * modified;
-@property (nonatomic, retain) NSNumber * remote_id;
-@property (nonatomic, retain) NSString * title;
 
 @end
