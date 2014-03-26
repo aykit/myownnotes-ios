@@ -46,7 +46,6 @@
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
-        self.detailTitleTextField.text = [self.detailItem title];
         self.detailContentTextField.text = [self.detailItem content];
     }
 }
@@ -62,7 +61,6 @@
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     
-    self.detailItem.title = self.detailTitleTextField.text;
     self.detailItem.content = self.detailContentTextField.text;
     self.detailItem.modified = modifiedDate;
     

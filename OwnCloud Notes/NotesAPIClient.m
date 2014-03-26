@@ -46,31 +46,4 @@ static const NSString *serverPath = @"/index.php/apps/notes/api/v0.2/";
     return self;
 }
 
-- (NSDictionary *)attributesForRepresentation:(NSDictionary *)representation
-                                     ofEntity:(NSEntityDescription *)entity
-                                 fromResponse:(NSHTTPURLResponse *)response
-{
-    NSMutableDictionary *mutablePropertyValues = [[super attributesForRepresentation:representation ofEntity:entity fromResponse:response] mutableCopy];
-    if ([entity.name isEqualToString:kNotesEntityName]) {
-//        NSString *remote_id = [representation valueForKey:@"id"];
-//        [mutablePropertyValues setValue:remote_id forKey:@"remote_id"];
-    }
-    
-    return mutablePropertyValues;
-}
-
-- (BOOL)shouldFetchRemoteAttributeValuesForObjectWithID:(NSManagedObjectID *)objectID
-                                 inManagedObjectContext:(NSManagedObjectContext *)context
-{
-    return [[[objectID entity] name] isEqualToString:kNotesEntityName];
-}
-
-- (BOOL)shouldFetchRemoteValuesForRelationship:(NSRelationshipDescription *)relationship
-                               forObjectWithID:(NSManagedObjectID *)objectID
-                        inManagedObjectContext:(NSManagedObjectContext *)context
-{
-    return [[[objectID entity] name] isEqualToString:kNotesEntityName];
-}
-
-
 @end
