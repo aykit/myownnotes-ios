@@ -27,6 +27,8 @@
 - (void)refetchData {
     _fetchedResultsController.fetchRequest.resultType = NSManagedObjectResultType;
     [_fetchedResultsController performFetch:nil];
+    
+    [self.refreshControl endRefreshing];
 }
 
 - (void)awakeFromNib
@@ -55,9 +57,14 @@
     
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[(id)[[UIApplication sharedApplication] delegate] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
     _fetchedResultsController.delegate = self;
-    [_fetchedResultsController performFetch:nil];
+    [self refetchData];
 
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                        init];
+    [refreshControl addTarget:self action:@selector(refetchData) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -65,6 +72,9 @@
     
     if (![[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL]) {
         [self showSettings:nil];
+    }
+    else {
+        [self refetchData];
     }
 }
 
