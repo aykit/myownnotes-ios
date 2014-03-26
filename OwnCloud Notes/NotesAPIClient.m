@@ -20,7 +20,7 @@ static const NSString *serverPath = @"/index.php/apps/notes/api/v0.2/";
     dispatch_once(&onceToken, ^{
         NSString *serverURL = [[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL];
         if (serverURL.length > 0) {
-            _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", serverURL, serverPath]]];
+            _sharedClient = [[self alloc] initWithBaseURL:[NSURL URLWithString:serverURL]];
         }
     });
     
