@@ -27,8 +27,8 @@ static const NSString *serverPath = @"/index.php/apps/notes/api/v0.2/";
     return _sharedClient;
 }
 
-- (id)initWithBaseURL:(NSURL *)url {
-    self = [super initWithBaseURL:url];
+- (id)initWithBaseURL:(NSURL *)serverURL {
+    self = [super initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", serverURL, serverPath]]];
     if (!self) {
         return nil;
     }
