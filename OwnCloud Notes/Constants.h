@@ -7,6 +7,8 @@
 //
 
 extern NSString* const kNotesKeychainName;
+extern NSString * const kNotesEntityName;
+
 
 // UserDefault constants
 extern NSString* const kNotesServerURL;

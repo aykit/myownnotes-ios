@@ -12,12 +12,9 @@
 
 #import <CoreData/CoreData.h>
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, DetailViewControllerDelegate>
+@interface MasterViewController : UITableViewController <DetailViewControllerDelegate>
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
-
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 - (IBAction)showSettings:(id)sender;
 
