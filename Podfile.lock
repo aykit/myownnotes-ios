@@ -8,7 +8,7 @@ PODS:
   - TransformerKit (0.3.1)
 
 DEPENDENCIES:
-  - AFIncrementalStore
+  - AFIncrementalStore (= 0.5.1)
 
 SPEC CHECKSUMS:
   AFIncrementalStore: 4b5033a6a5045be8c9985740e8a563b17db9eb68
