@@ -75,7 +75,7 @@
     self.detailItem.content = content;
     self.detailItem.modified = modifiedDate;
     
-//    [self.delegate detailViewController:self didFinishWithSave:YES];
+    [self.delegate detailViewController:self didFinishWithSave:YES];
 }
 
 - (void)didReceiveMemoryWarning
