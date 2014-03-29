@@ -42,7 +42,7 @@
     [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    self.serverTextField.text = @"http://localhost:4567/";//[prefs stringForKey:kNotesServerURL];
+    self.serverTextField.text = [prefs stringForKey:kNotesServerURL];
     self.usernameTextField.text = [keychain objectForKey:(__bridge id)(kSecAttrAccount)];
     self.passwordTextField.text = [keychain objectForKey:(__bridge id)(kSecValueData)];
     
@@ -59,7 +59,11 @@
 
 - (IBAction)close:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIStoryboard *storyboard = self.storyboard;
+    UINavigationController* nav = [storyboard instantiateViewControllerWithIdentifier:@"list"];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+    
 }
 
 # pragma mark - TableView Delegate
@@ -68,21 +72,6 @@
 {
     if (indexPath.section == 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:true];
-        
-        //reset application data
-        NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
-        NSFetchRequest * allNotes = [[NSFetchRequest alloc] init];
-        [allNotes setEntity:[NSEntityDescription entityForName:kNotesEntityName inManagedObjectContext:context]];
-        [allNotes setIncludesPropertyValues:NO]; //only fetch the managedObjectID
-        
-        NSError * error = nil;
-        NSArray * notes = [context executeFetchRequest:allNotes error:&error];
-   
-        //error handling goes here
-        for (NSManagedObject * note in notes) {
-            [context deleteObject:note];
-        }
-        [context save:nil];
         
         NotesAPIClient* client = [[NotesAPIClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverTextField.text]];
         [client setAuthorizationHeaderWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
@@ -122,4 +111,5 @@
     }
     return YES;
 }
+
 @end

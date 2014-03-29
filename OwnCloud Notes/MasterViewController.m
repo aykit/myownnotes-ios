@@ -49,12 +49,9 @@
 {
     [super viewDidLoad];
     
-    if (![[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL]) {
-        [self showSettings:nil];
-    }
-    else {
-        [self initFetchRequest];
-    }
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+    [self initFetchRequest];
     
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
@@ -92,14 +89,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)showSettings:(id)sender
-{
-    UIStoryboard *storyboard = self.storyboard;
-    UINavigationController* nav = [storyboard instantiateViewControllerWithIdentifier:@"settings"];
-    
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -122,7 +111,6 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 

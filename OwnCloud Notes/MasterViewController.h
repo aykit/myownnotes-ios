@@ -16,6 +16,4 @@
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
-- (IBAction)showSettings:(id)sender;
-
 @end
