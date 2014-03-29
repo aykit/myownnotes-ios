@@ -9,6 +9,7 @@
 #import "Constants.h"
 
 NSString * const kNotesKeychainName = @"OwncloudNotes";
+NSString * const kNotesEntityName = @"Note";
 
 NSString* const kNotesServerURL = @"serverURL";
 NSString* const kNotesAllowInvalidCertificates = @"allowInvalidCertificates";

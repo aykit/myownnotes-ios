@@ -8,6 +8,7 @@
 
 #import "SettingsViewController.h"
 #import "KeychainItemWrapper.h"
+#import "NotesAPIClient.h"
 
 @interface SettingsViewController ()
 
@@ -41,7 +42,7 @@
     [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    self.serverTextField.text = [prefs stringForKey:kNotesServerURL];
+    self.serverTextField.text = @"http://localhost:4567/";//[prefs stringForKey:kNotesServerURL];
     self.usernameTextField.text = [keychain objectForKey:(__bridge id)(kSecAttrAccount)];
     self.passwordTextField.text = [keychain objectForKey:(__bridge id)(kSecValueData)];
     
@@ -68,21 +69,42 @@
     if (indexPath.section == 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:true];
         
-        //TODO: check server connection
+        //reset application data
+        NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        NSFetchRequest * allNotes = [[NSFetchRequest alloc] init];
+        [allNotes setEntity:[NSEntityDescription entityForName:kNotesEntityName inManagedObjectContext:context]];
+        [allNotes setIncludesPropertyValues:NO]; //only fetch the managedObjectID
         
-        self.closeButton.enabled = YES;
+        NSError * error = nil;
+        NSArray * notes = [context executeFetchRequest:allNotes error:&error];
+   
+        //error handling goes here
+        for (NSManagedObject * note in notes) {
+            [context deleteObject:note];
+        }
+        [context save:nil];
         
-        KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
-        [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
+        NotesAPIClient* client = [[NotesAPIClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverTextField.text]];
+        [client setAuthorizationHeaderWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
         
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
-        [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
-        [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
-        [prefs synchronize];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Settings successfully stored" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        [client getPath:@"notes" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            self.closeButton.enabled = YES;
+            
+            KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
+            [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
+            
+            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
+            [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
+            [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
+            [prefs synchronize];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Settings successfully stored" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Credentials!" message:@"Please check your settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }];
     }
 }
 

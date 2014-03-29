@@ -46,7 +46,6 @@
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
-        self.detailTitleTextField.text = [self.detailItem title];
         self.detailContentTextField.text = [self.detailItem content];
     }
 }
@@ -62,8 +61,18 @@
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     
-    self.detailItem.title = self.detailTitleTextField.text;
-    self.detailItem.content = self.detailContentTextField.text;
+    NSString* firstLine = [[self.detailContentTextField.text componentsSeparatedByString: @"\n"] firstObject];
+    if (!firstLine) {
+        firstLine = @"New Note";
+    }
+    
+    NSString* content = self.detailContentTextField.text;
+    if (!content) {
+        content = @"New Note";
+    }
+    
+    self.detailItem.title = firstLine;
+    self.detailItem.content = content;
     self.detailItem.modified = modifiedDate;
     
     [self.delegate detailViewController:self didFinishWithSave:YES];
