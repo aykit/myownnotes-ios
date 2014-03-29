@@ -42,7 +42,7 @@
     [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    self.serverTextField.text = [prefs stringForKey:kNotesServerURL];
+    self.serverTextField.text = @"http://localhost:4567/";//[prefs stringForKey:kNotesServerURL];
     self.usernameTextField.text = [keychain objectForKey:(__bridge id)(kSecAttrAccount)];
     self.passwordTextField.text = [keychain objectForKey:(__bridge id)(kSecValueData)];
     

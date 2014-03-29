@@ -16,10 +16,9 @@
 @property (strong, nonatomic) Note *detailItem;
 
 @property (weak, nonatomic) IBOutlet UILabel *detailDateLabel;
-@property (weak, nonatomic) IBOutlet UITextField *detailContentTextField;
+@property (weak, nonatomic) IBOutlet UITextView *detailContentTextField;
 
 @property (nonatomic, weak) id <DetailViewControllerDelegate> delegate;
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 -(IBAction) saveAndClose:(id)sender;
 

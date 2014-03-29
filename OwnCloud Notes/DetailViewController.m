@@ -61,10 +61,21 @@
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     
-    self.detailItem.content = self.detailContentTextField.text;
+    NSString* firstLine = [[self.detailContentTextField.text componentsSeparatedByString: @"\n"] firstObject];
+    if (!firstLine) {
+        firstLine = @"New Note";
+    }
+    
+    NSString* content = self.detailContentTextField.text;
+    if (!content) {
+        content = @"New Note";
+    }
+    
+    self.detailItem.title = firstLine;
+    self.detailItem.content = content;
     self.detailItem.modified = modifiedDate;
     
-    [self.delegate detailViewController:self didFinishWithSave:YES];
+//    [self.delegate detailViewController:self didFinishWithSave:YES];
 }
 
 - (void)didReceiveMemoryWarning
