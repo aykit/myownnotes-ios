@@ -42,6 +42,16 @@ static const NSString *serverPath = @"/index.php/apps/notes/api/v0.2/";
     [self setAuthorizationHeaderWithUsername:[keychain objectForKey:(__bridge id)(kSecAttrAccount)] password:[keychain objectForKey:(__bridge id)(kSecValueData)]];
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self setDefaultHeader:@"Accept" value:@"application/json"];
+    [self setParameterEncoding:AFJSONParameterEncoding];
+    
+    
+    //offline caching
+    [self.operationQueue setSuspended:YES];
+    
+    [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        NSLog(@"Network Reachability changed: %d", status);
+        [self.operationQueue setSuspended:(status == AFNetworkReachabilityStatusNotReachable)];
+    }];
     
     return self;
 }
