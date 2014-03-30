@@ -57,6 +57,16 @@
     self.detailViewController.delegate = self;
 }
 
+- (void) viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES  scrollPosition:UITableViewScrollPositionBottom];
+        Note *object = [_fetchedResultsController objectAtIndexPath:indexPath];
+        self.detailViewController.detailItem = object;
+    }
+}
+
 - (void) initFetchRequest
 {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kNotesEntityName];
