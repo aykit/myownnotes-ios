@@ -79,7 +79,9 @@
     
     NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
     
-    self.detailItem = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
+    if (!self.detailItem) {
+        self.detailItem = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
+    }
     
     self.detailItem.title = firstLine;
     self.detailItem.content = content;
