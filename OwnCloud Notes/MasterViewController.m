@@ -54,6 +54,7 @@
     [self initFetchRequest];
     
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    self.detailViewController.delegate = self;
 }
 
 - (void) initFetchRequest
@@ -142,19 +143,19 @@
     }
 }
 
+- (IBAction)createNote:(id)sender
+{
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        self.detailViewController.detailItem = nil;
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     DetailViewController* nextViewController = [segue destinationViewController];
     nextViewController.delegate = self;
     
-    Note* note;
-    
-    NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    
-    if ([[segue identifier] isEqualToString:@"addNote"]) {
-        note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
-        note.modified = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
-    }
+    Note* note = nil;
     
     if ([[segue identifier] isEqualToString:@"editNote"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -228,9 +229,6 @@
 
 # pragma mark - Delegation
 
-/*
- Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new book.
- */
 - (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
     
     if (save) {

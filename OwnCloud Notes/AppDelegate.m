@@ -31,15 +31,20 @@
     
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        splitViewController.delegate = (id)navigationController.topViewController;
-    }
-    
-    
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    
-    return YES;
+        if (isLoggedIn) {
+            UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+            UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+            splitViewController.delegate = (id)navigationController.topViewController;
+        }
+        else {
+            [[self.window.rootViewController.childViewControllers firstObject] performSegueWithIdentifier:@"settingsSegue" sender:nil];
+        }
+}
+
+
+[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+
+return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

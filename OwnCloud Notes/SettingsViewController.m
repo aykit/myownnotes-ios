@@ -9,6 +9,7 @@
 #import "SettingsViewController.h"
 #import "KeychainItemWrapper.h"
 #import "NotesAPIClient.h"
+#import "AppDelegate.h"
 
 @interface SettingsViewController ()
 
@@ -45,10 +46,6 @@
     self.serverTextField.text = [prefs stringForKey:kNotesServerURL];
     self.usernameTextField.text = [keychain objectForKey:(__bridge id)(kSecAttrAccount)];
     self.passwordTextField.text = [keychain objectForKey:(__bridge id)(kSecValueData)];
-    
-    if (![prefs stringForKey:kNotesServerURL]) {
-        self.closeButton.enabled = NO;
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,10 +56,61 @@
 
 - (IBAction)close:(id)sender
 {
-    UIStoryboard *storyboard = self.storyboard;
-    UINavigationController* nav = [storyboard instantiateViewControllerWithIdentifier:@"list"];
+    if (self.serverTextField.text.length == 0){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Please enter a server name" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    else {
+        
+    NotesAPIClient* client = [[NotesAPIClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverTextField.text]];
+    [client setAuthorizationHeaderWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
     
-    [self presentViewController:nav animated:YES completion:nil];
+    [client getPath:@"notes" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
+        [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
+        
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
+        [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
+        [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
+        [prefs synchronize];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Owncloud found" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        
+        UIStoryboard *storyboard = self.storyboard;
+        UIViewController* listRootVC = [storyboard instantiateViewControllerWithIdentifier:@"list"];
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            UISplitViewController *splitViewController = (UISplitViewController *)listRootVC;
+            UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+            splitViewController.delegate = (id)navigationController.topViewController;
+            
+            AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            UIViewController *currentController = app.window.rootViewController;
+            app.window.rootViewController = splitViewController;
+            app.window.rootViewController = currentController;
+            
+            [UIView transitionWithView:self.navigationController.view.window
+                              duration:0.75
+                               options:UIViewAnimationOptionTransitionFlipFromRight
+                            animations:^{
+                                app.window.rootViewController = splitViewController;
+                            }
+                            completion:nil];
+        }
+        else {
+            [self presentViewController:listRootVC animated:YES completion:nil];
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Please check your network connection and settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }];
+        
+    }
     
 }
 
@@ -70,31 +118,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1) {
+    if (indexPath.section == 2) {
         [tableView deselectRowAtIndexPath:indexPath animated:true];
-        
-        NotesAPIClient* client = [[NotesAPIClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverTextField.text]];
-        [client setAuthorizationHeaderWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
-        
-        [client getPath:@"notes" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            self.closeButton.enabled = YES;
-            
-            KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
-            [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
-            
-            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-            [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
-            [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
-            [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
-            [prefs synchronize];
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Settings successfully stored" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Credentials!" message:@"Please check your settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        }];
+
+        [self close:nil];
     }
+    
 }
 
 # pragma mark - TextField Delegate

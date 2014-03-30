@@ -33,20 +33,26 @@
 
 - (void)configureView
 {
-    // Update the user interface for the detail item.
-
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormat setTimeStyle:NSDateFormatterMediumStyle];
+    
     if (self.detailItem) {
         
         self.title = self.detailItem.title;
         
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateStyle:NSDateFormatterMediumStyle];
-        [dateFormat setTimeStyle:NSDateFormatterMediumStyle];
+        
         NSNumber *unixtimestamp = [self.detailItem modified];
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
         self.detailContentTextField.text = [self.detailItem content];
+    }
+    else {
+        self.title = @"New Note";
+        
+        self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
+        self.detailContentTextField.text = @"";
     }
 }
 
@@ -70,6 +76,10 @@
     if (!content) {
         content = @"New Note";
     }
+    
+    NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
+    self.detailItem = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
     
     self.detailItem.title = firstLine;
     self.detailItem.content = content;

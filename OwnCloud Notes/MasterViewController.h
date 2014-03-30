@@ -16,4 +16,6 @@
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
+- (IBAction)createNote:(id)sender;
+
 @end
