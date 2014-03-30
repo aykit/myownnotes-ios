@@ -49,7 +49,7 @@ static const NSString *serverPath = @"/index.php/apps/notes/api/v0.2/";
     [self.operationQueue setSuspended:YES];
     
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        NSLog(@"Network Reachability changed: %d", status);
+//        NSLog(@"Network Reachability changed: %d", status);
         [self.operationQueue setSuspended:(status == AFNetworkReachabilityStatusNotReachable)];
     }];
     

@@ -227,7 +227,6 @@
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     
     Note *note = [_fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"configureCell: %@", note.title);
     if (note.title) {
         cell.textLabel.text = note.title;
         [cell.textLabel sizeToFit];
