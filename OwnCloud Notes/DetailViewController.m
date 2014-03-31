@@ -74,7 +74,7 @@
     
     NSString* content = self.detailContentTextField.text;
     if (!content) {
-        content = @"New Note";
+        content = @"";
     }
     
     NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
