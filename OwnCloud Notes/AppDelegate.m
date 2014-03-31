@@ -10,7 +10,6 @@
 
 #import "MasterViewController.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "AFIncrementalStore/AFIncrementalStore.h"
 #import "NotesIncrementalStore.h"
 
 @implementation AppDelegate
@@ -18,6 +17,7 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+@synthesize incrementalStore = _incrementalStore;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -39,12 +39,11 @@
         else {
             [[self.window.rootViewController.childViewControllers firstObject] performSegueWithIdentifier:@"settingsSegue" sender:nil];
         }
-}
-
-
-[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-
-return YES;
+    }
+    
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -128,7 +127,11 @@ return YES;
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     
-    AFIncrementalStore *incrementalStore = (AFIncrementalStore *)[_persistentStoreCoordinator addPersistentStoreWithType:[NotesIncrementalStore type] configuration:nil URL:nil options:nil error:nil];
+    _incrementalStore = (NotesIncrementalStore *)[_persistentStoreCoordinator addPersistentStoreWithType:[NotesIncrementalStore type] configuration:nil URL:nil options:nil error:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:AFIncrementalStoreContextDidFetchRemoteValues object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        [_incrementalStore gotFetchRequest:[note.userInfo valueForKey:AFIncrementalStoreFetchedObjectIDsKey] inContext:note.object];
+    }];
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Notes.sqlite"];
     
@@ -138,7 +141,7 @@ return YES;
                               };
     
     NSError *error = nil;
-    if (![incrementalStore.backingPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
+    if (![_incrementalStore.backingPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }

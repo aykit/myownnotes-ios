@@ -10,4 +10,6 @@
 
 @interface NotesIncrementalStore : AFIncrementalStore
 
+-(void) gotFetchRequest:(NSArray*) remoteObjectIds inContext: (NSManagedObjectContext*) context;
+
 @end

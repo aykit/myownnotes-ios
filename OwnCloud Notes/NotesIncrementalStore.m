@@ -27,4 +27,38 @@
     return [NotesAPIClient sharedClient];
 }
 
+#pragma mark - Callback for fetch Request
+
+
+-(void) gotFetchRequest:(NSArray*) remoteObjectIds inContext: (NSManagedObjectContext*) context
+{
+    NSManagedObjectContext* backingContext = context;
+    
+    //remove local objects not existing on server
+    NSSet* storedObjects = [backingContext registeredObjects];
+    
+    //        NSArray* store[storedObjects valueForKeyPath:@"objectID"];
+    
+    for (NSManagedObject* storedObject in storedObjects) {
+        NSString* resourceIdentifier = AFResourceIdentifierFromReferenceObject([self referenceObjectForObjectID: storedObject.objectID]);
+        
+        BOOL foundObject = false;
+        
+        for (NSString* remoteObjectId in remoteObjectIds){
+            
+            NSString* remoteIdentifier = AFResourceIdentifierFromReferenceObject([self referenceObjectForObjectID:(NSManagedObjectID*)remoteObjectId]);
+            
+            if ([resourceIdentifier isEqualToString:remoteIdentifier]) {
+                foundObject = true;
+                break;
+            }
+        }
+        
+        if (!foundObject){
+            [backingContext deleteObject:storedObject];
+        }
+    }
+    
+}
+
 @end
