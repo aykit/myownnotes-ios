@@ -39,14 +39,14 @@
     
     if (self.detailItem) {
         
-        self.title = self.detailItem.title;
+        self.title = [self.detailItem valueForKey:kNotesTitle];
         
         
-        NSNumber *unixtimestamp = [self.detailItem modified];
+        NSNumber *unixtimestamp = [self.detailItem valueForKey:kNotesModified];
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
-        self.detailContentTextField.text = [self.detailItem content];
+        self.detailContentTextField.text = [self.detailItem valueForKey:kNotesContent];
     }
     else {
         self.title = @"New Note";
@@ -77,17 +77,26 @@
         content = @"";
     }
     
-    NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    NSMutableDictionary* note = nil;
     
-    if (!self.detailItem) {
-        self.detailItem = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
+    if (self.detailItem) {
+        note = [NSMutableDictionary dictionaryWithObject:[self.detailItem valueForKey:kNotesId] forKey:kNotesId];
+    }
+    else {
+        note = [NSMutableDictionary dictionary];
     }
     
-    self.detailItem.title = firstLine;
-    self.detailItem.content = content;
-    self.detailItem.modified = modifiedDate;
+    [note setValue:firstLine forKey:kNotesTitle];
+    [note setValue:content forKey:kNotesContent];
+    [note setValue:modifiedDate forKey:kNotesModified];
     
-    [self.delegate detailViewController:self didFinishWithSave:YES];
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
+                                                         forKey:kNotesNotificationItem];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
+    
+    
+    // Dismiss the modal view to return to the main list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning

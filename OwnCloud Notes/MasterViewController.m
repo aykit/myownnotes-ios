@@ -8,28 +8,24 @@
 
 #import "MasterViewController.h"
 
-#import "AFIncrementalStore.h"
-
 #import "SettingsViewController.h"
 #import "DetailViewController.h"
-#import "Note.h"
 #import "AppDelegate.h"
+#import "AFNetworking.h"
 
-@interface MasterViewController () <NSFetchedResultsControllerDelegate> {
-    NSFetchedResultsController *_fetchedResultsController;
-}
+@interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 
-- (void)refetchData;
+- (void)fetchData;
 @end
 
 
 @implementation MasterViewController
 
-- (void)refetchData {
-    _fetchedResultsController.fetchRequest.resultType = NSManagedObjectResultType;
-    [_fetchedResultsController performFetch:nil];
+- (void)fetchData
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self];
 }
 
 - (void)awakeFromNib
@@ -45,49 +41,31 @@
 {
     [super viewDidLoad];
     
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate] addObserver:self forKeyPath:@"notes" options:0 context:nil];
+    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
-    [self initFetchRequest];
+    self.refreshControl = [[UIRefreshControl alloc]
+                           init];
+    [self.refreshControl addTarget:self action:@selector(fetchData) forControlEvents:UIControlEventValueChanged];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:kNotesDidUpdateNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        [self.refreshControl endRefreshing];
+    }];
+    
     
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    self.detailViewController.delegate = self;
+    
+    [self fetchData];
 }
 
 - (void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES  scrollPosition:UITableViewScrollPositionBottom];
-        Note *object = [_fetchedResultsController objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = object;
+        
+        //TODO: set object on load
+        //        self.detailViewController.detailItem = object;
     }
-}
-
-- (void) initFetchRequest
-{
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kNotesEntityName];
-    
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
-    
-    // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modified" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
-//    fetchRequest.returnsObjectsAsFaults = NO;
-    
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[(id)[[UIApplication sharedApplication] delegate] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-    _fetchedResultsController.delegate = self;
-    [_fetchedResultsController performFetch:nil];
-    
-    self.refreshControl = [[UIRefreshControl alloc]
-                           init];
-    [self.refreshControl addTarget:self action:@selector(refetchData) forControlEvents:UIControlEventValueChanged];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:AFIncrementalStoreContextDidFetchRemoteValues object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-        [self.refreshControl endRefreshing];
-    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,17 +74,54 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    NSIndexSet *indices = [change objectForKey:NSKeyValueChangeIndexesKey];
+    if (indices == nil)
+        return; // Nothing to do
+    
+    
+    // Build index paths from index sets
+    NSUInteger indexCount = [indices count];
+    NSUInteger buffer[indexCount];
+    [indices getIndexes:buffer maxCount:indexCount inIndexRange:nil];
+    
+    NSMutableArray *indexPathArray = [NSMutableArray array];
+    for (int i = 0; i < indexCount; i++) {
+        NSUInteger indexPathIndices[2];
+        indexPathIndices[0] = 0;
+        indexPathIndices[1] = buffer[i];
+        NSIndexPath *newPath = [NSIndexPath indexPathWithIndexes:indexPathIndices length:2];
+        [indexPathArray addObject:newPath];
+    }
+    
+    NSNumber *kind = [change objectForKey:NSKeyValueChangeKindKey];
+    if ([kind integerValue] == NSKeyValueChangeInsertion)  // Rows were added
+        [self.tableView insertRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+    else if ([kind integerValue] == NSKeyValueChangeRemoval)  // Rows were removed
+        [self.tableView deleteRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+    
+}
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [[_fetchedResultsController sections] count];
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [_fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
+    return [[(AppDelegate*)[[UIApplication sharedApplication] delegate] notes] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -124,9 +139,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_fetchedResultsController.managedObjectContext deleteObject:[_fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
+        //TODO: delete from array and send delete request
     }
 }
 
@@ -138,8 +151,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        Note *object = [_fetchedResultsController objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = object;
+        // set object in detailview
     }
 }
 
@@ -153,93 +165,35 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     DetailViewController* nextViewController = [segue destinationViewController];
-    nextViewController.delegate = self;
     
-    Note* note = nil;
+    NSDictionary* note = nil;
     
     if ([[segue identifier] isEqualToString:@"editNote"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        note = [_fetchedResultsController objectAtIndexPath:indexPath];
+        
+        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+        note = [notesArray objectAtIndex: indexPath.row];
     }
     
     [nextViewController setDetailItem:note];
 }
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView beginUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    UITableView *tableView = self.tableView;
-
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            NSLog(@"insert row");
-            break;
-
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            NSLog(@"delete row");
-            break;
-
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-            NSLog(@"update row");
-            break;
-
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            NSLog(@"move row");
-            break;
-    }
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView endUpdates];
-}
-
-
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
-
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-//{
-//    // In the simplest, most efficient, case, reload the table view.
-//    [self.tableView reloadData];
-//}
-
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     
-    Note *note = [_fetchedResultsController objectAtIndexPath:indexPath];
-    if (note.title) {
-        cell.textLabel.text = note.title;
+    NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+    
+    NSDictionary* note = [notesArray objectAtIndex: indexPath.row];
+    
+    if ([note valueForKey:kNotesTitle]) {
+        cell.textLabel.text = [note valueForKey: kNotesTitle];
         [cell.textLabel sizeToFit];
     }
-    NSNumber *unixtimestamp = note.modified;
+    NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
     cell.detailTextLabel.text = [dateFormat stringFromDate:date];
-}
-
-# pragma mark - Delegation
-
-- (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
-    
-    if (save) {
-        [(AppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
-    }
-    
-    // Dismiss the modal view to return to the main list
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

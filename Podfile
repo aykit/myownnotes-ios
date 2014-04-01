@@ -1,3 +1,3 @@
 platform :ios, '6.0'
 
-pod 'AFIncrementalStore', '0.5.1'
+pod 'AFNetworking', '2.2.1'

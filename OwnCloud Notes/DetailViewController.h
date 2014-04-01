@@ -7,23 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Note.h"
-
-@protocol DetailViewControllerDelegate;
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate>
 
-@property (strong, nonatomic) Note *detailItem;
+@property (strong, nonatomic) NSDictionary *detailItem;
 
 @property (weak, nonatomic) IBOutlet UILabel *detailDateLabel;
 @property (weak, nonatomic) IBOutlet UITextView *detailContentTextField;
 
-@property (nonatomic, weak) id <DetailViewControllerDelegate> delegate;
-
--(IBAction) saveAndClose:(id)sender;
-
-@end
-
-@protocol DetailViewControllerDelegate
-- (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save;
 @end
