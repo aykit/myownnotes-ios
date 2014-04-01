@@ -39,14 +39,14 @@
     
     if (self.detailItem) {
         
-        self.title = self.detailItem.title;
+        self.title = [self.detailItem valueForKey:kNotesTitle];
         
         
-        NSNumber *unixtimestamp = [self.detailItem modified];
+        NSNumber *unixtimestamp = [self.detailItem valueForKey:kNotesModified];
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
-        self.detailContentTextField.text = [self.detailItem content];
+        self.detailContentTextField.text = [self.detailItem valueForKey:kNotesContent];
     }
     else {
         self.title = @"New Note";
@@ -77,15 +77,13 @@
         content = @"";
     }
     
-    NSManagedObjectContext* context = [(id)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    
     if (!self.detailItem) {
-        self.detailItem = (Note *)[NSEntityDescription insertNewObjectForEntityForName:kNotesEntityName inManagedObjectContext:context];
+        self.detailItem = [NSDictionary dictionary];
     }
     
-    self.detailItem.title = firstLine;
-    self.detailItem.content = content;
-    self.detailItem.modified = modifiedDate;
+    [self.detailItem setValue:firstLine forKey:kNotesTitle];
+    [self.detailItem setValue:content forKey:kNotesContent];
+    [self.detailItem setValue:modifiedDate forKey:kNotesModified];
     
     [self.delegate detailViewController:self didFinishWithSave:YES];
 }

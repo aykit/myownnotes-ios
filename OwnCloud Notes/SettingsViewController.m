@@ -8,8 +8,8 @@
 
 #import "SettingsViewController.h"
 #import "KeychainItemWrapper.h"
-#import "NotesAPIClient.h"
 #import "AppDelegate.h"
+#import <AFNetworking.h>
 
 @interface SettingsViewController ()
 
@@ -62,53 +62,54 @@
     }
     else {
         
-    NotesAPIClient* client = [[NotesAPIClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverTextField.text]];
-    [client setAuthorizationHeaderWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
-    
-    [client getPath:@"notes" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", self.serverTextField.text, kServerPath];
         
-        KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
-        [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
-        
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
-        [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
-        [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
-        [prefs synchronize];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Owncloud found" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        
-        UIStoryboard *storyboard = self.storyboard;
-        UIViewController* listRootVC = [storyboard instantiateViewControllerWithIdentifier:@"list"];
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            UISplitViewController *splitViewController = (UISplitViewController *)listRootVC;
-            UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-            splitViewController.delegate = (id)navigationController.topViewController;
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
+        [manager GET:serverUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
-            AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
+            [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
             
-            UIViewController *currentController = app.window.rootViewController;
-            app.window.rootViewController = splitViewController;
-            app.window.rootViewController = currentController;
+            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            [prefs setObject:self.serverTextField.text forKey:kNotesServerURL];
+            [keychain setObject:self.usernameTextField.text forKey:(__bridge id)(kSecAttrAccount)];
+            [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
+            [prefs synchronize];
             
-            [UIView transitionWithView:self.navigationController.view.window
-                              duration:0.75
-                               options:UIViewAnimationOptionTransitionFlipFromRight
-                            animations:^{
-                                app.window.rootViewController = splitViewController;
-                            }
-                            completion:nil];
-        }
-        else {
-            [self presentViewController:listRootVC animated:YES completion:nil];
-        }
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Please check your network connection and settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-    }];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"Owncloud found" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            
+            UIStoryboard *storyboard = self.storyboard;
+            UIViewController* listRootVC = [storyboard instantiateViewControllerWithIdentifier:@"list"];
+            
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                UISplitViewController *splitViewController = (UISplitViewController *)listRootVC;
+                UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+                splitViewController.delegate = (id)navigationController.topViewController;
+                
+                AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                
+                UIViewController *currentController = app.window.rootViewController;
+                app.window.rootViewController = splitViewController;
+                app.window.rootViewController = currentController;
+                
+                [UIView transitionWithView:self.navigationController.view.window
+                                  duration:0.75
+                                   options:UIViewAnimationOptionTransitionFlipFromRight
+                                animations:^{
+                                    app.window.rootViewController = splitViewController;
+                                }
+                                completion:nil];
+            }
+            else {
+                [self presentViewController:listRootVC animated:YES completion:nil];
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"Please check your network connection and settings" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }];
         
     }
     
@@ -120,7 +121,7 @@
 {
     if (indexPath.section == 2) {
         [tableView deselectRowAtIndexPath:indexPath animated:true];
-
+        
         [self close:nil];
     }
     
