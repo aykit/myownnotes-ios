@@ -139,7 +139,11 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        //TODO: delete from array and send delete request
+        
+        NSDictionary* note = [[(AppDelegate*)[[UIApplication sharedApplication] delegate] notes] objectAtIndex:indexPath.row];
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
+                                                             forKey:kNotesNotificationDeleteItem];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
     }
 }
 

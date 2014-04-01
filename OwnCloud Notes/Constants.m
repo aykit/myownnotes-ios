@@ -11,6 +11,7 @@
 NSString* const kNotesShouldUpdateNotification = @"notesShouldUpdateNotification";
 NSString* const kNotesDidUpdateNotification = @"notesDidUpdateNotification";
 NSString* const kNotesNotificationItem = @"notesNotificationItem";
+NSString* const kNotesNotificationDeleteItem = @"notesNotificationDeleteItem";
 
 NSString* const kServerPath = @"/index.php/apps/notes/api/v0.2/notes";
 

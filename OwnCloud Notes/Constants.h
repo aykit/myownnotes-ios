@@ -25,3 +25,4 @@ extern NSString* const kNotesModified;
 extern NSString* const kNotesShouldUpdateNotification;
 extern NSString* const kNotesDidUpdateNotification;
 extern NSString* const kNotesNotificationItem;
+extern NSString* const kNotesNotificationDeleteItem;
