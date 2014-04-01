@@ -77,15 +77,26 @@
         content = @"";
     }
     
-    if (!self.detailItem) {
-        self.detailItem = [NSDictionary dictionary];
+    NSMutableDictionary* note = nil;
+    
+    if (self.detailItem) {
+        note = [NSMutableDictionary dictionaryWithObject:[self.detailItem valueForKey:kNotesId] forKey:kNotesId];
+    }
+    else {
+        note = [NSMutableDictionary dictionary];
     }
     
-    [self.detailItem setValue:firstLine forKey:kNotesTitle];
-    [self.detailItem setValue:content forKey:kNotesContent];
-    [self.detailItem setValue:modifiedDate forKey:kNotesModified];
+    [note setValue:firstLine forKey:kNotesTitle];
+    [note setValue:content forKey:kNotesContent];
+    [note setValue:modifiedDate forKey:kNotesModified];
     
-    [self.delegate detailViewController:self didFinishWithSave:YES];
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
+                                                         forKey:kNotesNotificationItem];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
+    
+    
+    // Dismiss the modal view to return to the main list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning

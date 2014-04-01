@@ -10,7 +10,7 @@
 
 #import "DetailViewController.h"
 
-@interface MasterViewController : UITableViewController <DetailViewControllerDelegate>
+@interface MasterViewController : UITableViewController
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 

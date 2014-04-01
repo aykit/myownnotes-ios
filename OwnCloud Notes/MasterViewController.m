@@ -13,7 +13,7 @@
 #import "AppDelegate.h"
 #import "AFNetworking.h"
 
-@interface MasterViewController () <NSFetchedResultsControllerDelegate>
+@interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 
@@ -55,8 +55,6 @@
     
     
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    self.detailViewController.delegate = self;
-    
     
     [self fetchData];
 }
@@ -167,7 +165,6 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     DetailViewController* nextViewController = [segue destinationViewController];
-    nextViewController.delegate = self;
     
     NSDictionary* note = nil;
     
@@ -197,20 +194,6 @@
     NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
     cell.detailTextLabel.text = [dateFormat stringFromDate:date];
-}
-
-# pragma mark - Delegation
-
-- (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
-    
-    if (save) {
-        NSDictionary *dataDict = [NSDictionary dictionaryWithObject:controller.detailItem
-                                                             forKey:kNotesNotificationItem];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
-    }
-    
-    // Dismiss the modal view to return to the main list
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

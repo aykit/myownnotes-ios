@@ -113,27 +113,53 @@
     NSString* username = [keychain objectForKey:(__bridge id)(kSecAttrAccount)];
     NSString* password = [keychain objectForKey:(__bridge id)(kSecValueData)];
     
+    NSString* serverURL = [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL];
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
     [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:username password:password];
+    
+    AFHTTPRequestOperation* lastOperation = nil;
+    
+    NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", serverURL, kServerPath];
     
     NSDictionary *theData = [note userInfo];
     if (theData != nil) {
         NSDictionary* note = [theData valueForKey:kNotesNotificationItem];
         if ([note valueForKey:kNotesId]){
-            //TODO: update existing Item
+            NSDictionary* onlyContentDict = [NSDictionary dictionaryWithObject:[note valueForKey:kNotesContent] forKey:kNotesContent];
+            lastOperation = [manager PUT:[NSString stringWithFormat:@"%@/%@", serverUrlString, [note valueForKey:kNotesId]] parameters:onlyContentDict
+                                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                     [self removeNotesObject:[self noteWithId:[responseObject valueForKey:kNotesId]]];
+                                     [self insertNoteSorted:responseObject];
+                                      NSLog(@"Response: %@", responseObject);
+            }
+                                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                     NSLog(@"Error: %@", error);
+                                     
+                                 }];
+            
         }
         else {
-            //TOOD: create new Item
+            NSDictionary* onlyContentDict = [NSDictionary dictionaryWithObject:[note valueForKey:kNotesContent] forKey:kNotesContent];
+            lastOperation = [manager POST:serverUrlString parameters:onlyContentDict
+                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                      NSLog(@"Response: %@", responseObject);
+                                      
+                                      [self insertNoteSorted:responseObject];
+                                  }
+                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      NSLog(@"Error: %@", error);
+                                      
+                                  }];
+
         }
     }
     
     
-    NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
-    
-    
-    [manager GET:serverUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    AFHTTPRequestOperation* getOperation = [manager GET:serverUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSArray* responseArray = responseObject;
         NSArray* localIds = [_notes valueForKey:kNotesId];
         NSArray* remoteIds = [responseArray valueForKey:kNotesId];
@@ -168,6 +194,9 @@
         NSLog(@"Error: %@", error);
         
     }];
+    
+    if (lastOperation)
+        [getOperation addDependency:lastOperation];
     
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
