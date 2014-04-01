@@ -147,12 +147,18 @@
         NSMutableArray *inserted = [NSMutableArray arrayWithArray:remoteIds];
         [inserted removeObjectsInArray:localIds];
         
-        for (NSNumber* noteId in inserted) {
-            for (NSDictionary* newNote in responseArray) {
-                NSNumber* newNoteId = [newNote valueForKey:kNotesId];
-                if ([newNoteId isEqualToNumber:noteId]){
-                    
-                    [self insertNoteSorted:newNote];
+        for (NSDictionary* remoteNote in responseArray) {
+            NSDictionary* localNote = [self noteWithId:[remoteNote valueForKey:kNotesId]];
+            
+            if(!localNote){
+                [self insertNoteSorted:remoteNote];
+            }
+            else {
+                NSNumber* remoteModified = [remoteNote valueForKey:kNotesModified];
+                NSNumber* localModified = [localNote valueForKey:kNotesModified];
+                if (![remoteModified isEqualToNumber:localModified]){
+                    [self removeNotesObject:localNote];
+                    [self insertNoteSorted:remoteNote];
                 }
             }
         }
