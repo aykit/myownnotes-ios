@@ -13,6 +13,7 @@
 #import "SettingsViewController.h"
 #import "DetailViewController.h"
 #import "Note.h"
+#import "AppDelegate.h"
 
 @interface MasterViewController () <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController *_fetchedResultsController;
@@ -125,13 +126,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [_fetchedResultsController.managedObjectContext deleteObject:[_fetchedResultsController objectAtIndexPath:indexPath]];
         
-        NSError *error = nil;
-        if (![_fetchedResultsController.managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
     }
 }
 
@@ -240,12 +235,7 @@
 - (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
     
     if (save) {
-        NSError* error = nil;
-        
-        if (![_fetchedResultsController.managedObjectContext save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
+        [(AppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
     }
     
     // Dismiss the modal view to return to the main list
