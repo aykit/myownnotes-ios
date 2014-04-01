@@ -63,8 +63,8 @@
     [super viewDidAppear:animated];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        //TODO: set object on load
-        //        self.detailViewController.detailItem = object;
+        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+        self.detailViewController.detailItem = [notesArray objectAtIndex: 0];
     }
 }
 
@@ -151,7 +151,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        // set object in detailview
+        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+        self.detailViewController.detailItem = [notesArray objectAtIndex: indexPath.row];
     }
 }
 
