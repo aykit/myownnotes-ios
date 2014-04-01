@@ -206,13 +206,12 @@
             }
         }
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
     }];
-    
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
 }
 
 - (NSUInteger)countOfNotes {
