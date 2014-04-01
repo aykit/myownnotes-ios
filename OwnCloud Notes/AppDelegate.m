@@ -99,7 +99,8 @@
                                     NSNumber* modifiedObj1 = [obj1 valueForKey:kNotesModified];
                                     NSNumber* modifiedObj2 = [obj2 valueForKey:kNotesModified];
                                     
-                                    return [modifiedObj1 compare:modifiedObj2];
+                                    //order descending
+                                    return [modifiedObj2 compare:modifiedObj1];
                                 }];
     
     [self insertObject:note inNotesAtIndex:newIndex];
