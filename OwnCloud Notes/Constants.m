@@ -21,6 +21,7 @@ NSString* const kNotesServerURL = @"serverURL";
 NSString* const kNotesAllowInvalidCertificates = @"allowInvalidCertificates";
 
 NSString* const kNoteIsNew = @"isNew";
+NSString* const kNoteIsOffline = @"isOffline";
 
 NSString* const kNotesId = @"id";
 NSString* const kNotesTitle = @"title";

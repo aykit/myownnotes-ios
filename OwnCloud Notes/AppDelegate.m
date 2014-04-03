@@ -38,6 +38,9 @@
     _httpOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
     _httpOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
+    // to guarantee correct create/update order we must store changes sequentially
+    [_httpOperationManager.operationQueue setMaxConcurrentOperationCount:1];
+    
     BOOL isLoggedIn = [[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL] != nil;
     
     NSString *storyboardId = isLoggedIn ? @"list" : @"settings";
@@ -140,7 +143,7 @@
     
     NSOperation* lastOperation = nil;
     
-    NSArray* cachedCreated = [self chachedNotesForCache:kNotesAdded];
+    NSArray* cachedCreated = [self cachedNotesForCache:kNotesAdded];
     for (NSDictionary* note in cachedCreated) {
         NSOperation* newOperation = [self createNote:[note valueForKey:kNotesId] onServerWithContent:[note valueForKey:kNotesContent]];
         if (lastOperation) {
@@ -149,7 +152,7 @@
         lastOperation = newOperation;
     }
     
-    NSArray* cachedEdited = [self chachedNotesForCache:kNotesEdited];
+    NSArray* cachedEdited = [self cachedNotesForCache:kNotesEdited];
     for (NSDictionary* note in cachedEdited) {
         if (![note valueForKey:kNoteIsNew]) {
             NSOperation* newOperation = [self updateNote:[note valueForKey:kNotesId] onServerWithContent:[note valueForKey:kNotesContent]];
@@ -160,7 +163,7 @@
         }
     }
     
-    NSArray* cachedDeleted = [self chachedNotesForCache:kNotesRemoved];
+    NSArray* cachedDeleted = [self cachedNotesForCache:kNotesRemoved];
     for (NSDictionary* note in cachedDeleted) {
         NSOperation* newOperation = [self deleteNoteFromServer:[note valueForKey:kNotesId]];
         if (lastOperation) {
@@ -245,13 +248,14 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotesDidUpdateNotification object:self];
     }];
     
     if (lastOperation) {
         [lastOperation addDependency:newOperation];
     }
+    
+    NSLog(@"%@", [_httpOperationManager.operationQueue operations]);
 }
 
 - (void)persistNotes
@@ -271,6 +275,9 @@
 
 - (void) cacheNote:(NSDictionary*) note in:(NSString*) cacheConstant
 {
+    //remove old cached notes with id
+    [self deleteCachedNoteWithId:[note valueForKey:kNotesId] from:cacheConstant];
+    
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray* arr = [NSMutableArray arrayWithArray:[userDefaults valueForKey:cacheConstant]];
     [arr addObject:note];
@@ -278,7 +285,7 @@
     [userDefaults synchronize];
 }
 
-- (void) deleteChachedNoteWithId:(NSString*) noteId from:(NSString*) cacheConstant
+- (void) deleteCachedNoteWithId:(NSString*) noteId from:(NSString*) cacheConstant
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray* arr = [NSMutableArray arrayWithArray:[userDefaults valueForKey:cacheConstant]];
@@ -289,11 +296,12 @@
 
 - (void) updateOfflineNoteId:(NSString*) localNoteId withId:(NSString*) serverNoteId in:(NSString*) cacheConstant
 {
-    NSMutableDictionary* localEditedNote = [NSMutableDictionary dictionaryWithDictionary:[self fetchNoteWithId:localNoteId fromCache:kNotesEdited]];
-    if (localEditedNote) {
-        [localEditedNote setValue:serverNoteId forKey:kNotesId];
-        [self cacheNote:localEditedNote in:kNotesEdited];
-        [self deleteChachedNoteWithId:localNoteId from:kNotesEdited];
+    NSDictionary* localNote = [self fetchNoteWithId:localNoteId fromCache:cacheConstant];
+    if (localNote) {
+        NSMutableDictionary* localUpdateNote = [NSMutableDictionary dictionaryWithDictionary:localNote];
+        [localUpdateNote setValue:serverNoteId forKey:kNotesId];
+        [self cacheNote:localUpdateNote in:kNotesEdited];
+        [self deleteCachedNoteWithId:localNoteId from:kNotesEdited];
     }
 
 }
@@ -304,26 +312,34 @@
     
     return [_httpOperationManager DELETE:[NSString stringWithFormat:@"%@/%@", serverUrlString, noteId] parameters:nil
                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                     [self deleteChachedNoteWithId:noteId from:kNotesRemoved];
+                                     [self deleteCachedNoteWithId:noteId from:kNotesRemoved];
                                  }
                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                     NSLog(@"Error: %@", error);
+                                     if ([operation.response statusCode] == 404){
+                                         //note is no longer available on server so we can delete the cached note request
+                                         [self deleteCachedNoteWithId:noteId from:kNotesRemoved];
+                                     }
+                                     NSLog(@"Delete Request Error: %@", [error localizedDescription]);
                                  }];
 }
 
 - (NSOperation*) updateNote:(NSString*) noteId onServerWithContent: (NSString*) content
 {
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
+ 
+    if (!content){
+        content = @"";
+    }
     
     NSDictionary* onlyContentDict = [NSDictionary dictionaryWithObject:content forKey:kNotesContent];
     return [_httpOperationManager PUT:[NSString stringWithFormat:@"%@/%@", serverUrlString, noteId] parameters:onlyContentDict
                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                   [self removeNotesObject:[self noteWithId:[responseObject valueForKey:kNotesId]]];
                                   [self insertNoteSorted:responseObject];
-                                  [self deleteChachedNoteWithId:noteId from:kNotesEdited];
+                                  [self deleteCachedNoteWithId:noteId from:kNotesEdited];
                               }
                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                  NSLog(@"Error: %@", error);
+                                  NSLog(@"Update Request Error: %@", [error localizedDescription]);
                               }];
 }
 
@@ -336,7 +352,7 @@
                                success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                    
                                    [self insertNoteSorted:responseObject];
-                                   [self deleteChachedNoteWithId:localNoteId from:kNotesAdded];
+                                   [self deleteCachedNoteWithId:localNoteId from:kNotesAdded];
                                    
                                    // if note was created and edited offline, replace offline UUID with server generated id
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesEdited];
@@ -344,11 +360,11 @@
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesRemoved];
                                }
                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                   NSLog(@"Error: %@", error);
+                                   NSLog(@"Create Request Error: %@", [error localizedDescription]);
                                }];
 }
 
-- (NSArray*) chachedNotesForCache:(NSString*) cacheConstant
+- (NSArray*) cachedNotesForCache:(NSString*) cacheConstant
 {
     return [[NSUserDefaults standardUserDefaults] valueForKey:cacheConstant];
 }

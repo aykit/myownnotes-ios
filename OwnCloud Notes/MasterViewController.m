@@ -160,6 +160,18 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+    NSDictionary* note = [notesArray objectAtIndex:indexPath.row];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[note valueForKey:kNotesTitle]
+                                                    message:@"This note is not yet synched with the server"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
 - (IBAction)createNote:(id)sender
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -196,6 +208,15 @@
         cell.textLabel.text = [note valueForKey: kNotesTitle];
         [cell.textLabel sizeToFit];
     }
+    
+    if ([note valueForKey:kNoteIsOffline]) {
+        [cell setAccessoryType:UITableViewCellAccessoryDetailDisclosureButton];
+    }
+    else {
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    }
+        
+    
     NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
     cell.detailTextLabel.text = [dateFormat stringFromDate:date];

@@ -47,6 +47,10 @@
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
         self.detailContentTextField.text = [self.detailItem valueForKey:kNotesContent];
+        
+        if ([self.detailItem valueForKey:kNoteIsOffline]){
+            self.offlineInfoButton.hidden = false;
+        }
     }
     else {
         self.title = @"New Note";
@@ -89,7 +93,7 @@
         [note setValue:@YES forKey:kNoteIsNew];
     }
     
-    
+    [note setValue:@YES forKey:kNoteIsOffline];
     [note setValue:noteId forKey:kNotesId];
     [note setValue:firstLine forKey:kNotesTitle];
     [note setValue:content forKey:kNotesContent];
@@ -126,4 +130,13 @@
     self.masterPopoverController = nil;
 }
 
+-(IBAction)showOfflineMessage:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Offline"
+                                                    message:@"This note is not yet synched with the server"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
 @end

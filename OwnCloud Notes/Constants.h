@@ -16,6 +16,7 @@ extern NSString* const kNotesServerURL;
 extern NSString* const kNotesAllowInvalidCertificates;
 
 extern NSString* const kNoteIsNew;
+extern NSString* const kNoteIsOffline;
 
 extern NSString* const kNotesId;
 extern NSString* const kNotesTitle;
