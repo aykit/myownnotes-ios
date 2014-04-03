@@ -77,15 +77,20 @@
         content = @"";
     }
     
-    NSMutableDictionary* note = nil;
+    NSString* noteId = nil;
+    
+    NSMutableDictionary* note = [NSMutableDictionary dictionary];
     
     if (self.detailItem) {
-        note = [NSMutableDictionary dictionaryWithObject:[self.detailItem valueForKey:kNotesId] forKey:kNotesId];
+        noteId = [self.detailItem valueForKey:kNotesId];
     }
     else {
-        note = [NSMutableDictionary dictionary];
+        noteId = [[NSUUID UUID] UUIDString];
+        [note setValue:@YES forKey:kNoteIsNew];
     }
     
+    
+    [note setValue:noteId forKey:kNotesId];
     [note setValue:firstLine forKey:kNotesTitle];
     [note setValue:content forKey:kNotesContent];
     [note setValue:modifiedDate forKey:kNotesModified];

@@ -15,12 +15,18 @@ NSString* const kNotesNotificationDeleteItem = @"notesNotificationDeleteItem";
 
 NSString* const kServerPath = @"/index.php/apps/notes/api/v0.2/notes";
 
-NSString * const kNotesKeychainName = @"OwncloudNotes";
+NSString * const kNotes = @"OwncloudNotes";
 
 NSString* const kNotesServerURL = @"serverURL";
 NSString* const kNotesAllowInvalidCertificates = @"allowInvalidCertificates";
+
+NSString* const kNoteIsNew = @"isNew";
 
 NSString* const kNotesId = @"id";
 NSString* const kNotesTitle = @"title";
 NSString* const kNotesContent = @"content";
 NSString* const kNotesModified = @"modified";
+
+NSString* const kNotesAdded = @"notesAdded";
+NSString* const kNotesEdited = @"notesEdited";
+NSString* const kNotesRemoved = @"notesRemoved";

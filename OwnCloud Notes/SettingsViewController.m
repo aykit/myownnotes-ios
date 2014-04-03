@@ -39,7 +39,7 @@
 {
     [super viewWillAppear:animated];
     
-    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
+    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotes accessGroup:nil];
     [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -69,7 +69,7 @@
         [manager.requestSerializer setAuthorizationHeaderFieldWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
         [manager GET:serverUrlString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
-            KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotesKeychainName accessGroup:nil];
+            KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotes accessGroup:nil];
             [keychain setObject:(__bridge id)(kSecAttrAccessibleWhenUnlocked) forKey:(__bridge id)(kSecAttrAccessible)];
             
             NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];

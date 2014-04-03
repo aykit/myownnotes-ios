@@ -9,16 +9,22 @@
 
 extern NSString* const kServerPath;
 
-extern NSString* const kNotesKeychainName;
+extern NSString* const kNotes;
 
 // UserDefault constants
 extern NSString* const kNotesServerURL;
 extern NSString* const kNotesAllowInvalidCertificates;
 
+extern NSString* const kNoteIsNew;
+
 extern NSString* const kNotesId;
 extern NSString* const kNotesTitle;
 extern NSString* const kNotesContent;
 extern NSString* const kNotesModified;
+
+extern NSString* const kNotesAdded;
+extern NSString* const kNotesEdited;
+extern NSString* const kNotesRemoved;
 
 
 //Notification constant
