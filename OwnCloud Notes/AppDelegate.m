@@ -282,6 +282,17 @@
     [userDefaults synchronize];
 }
 
+- (void) updateOfflineNoteId:(NSString*) localNoteId withId:(NSString*) serverNoteId in:(NSString*) cacheConstant
+{
+    NSMutableDictionary* localEditedNote = [NSMutableDictionary dictionaryWithDictionary:[self fetchNoteWithId:localNoteId fromCache:kNotesEdited]];
+    if (localEditedNote) {
+        [localEditedNote setValue:serverNoteId forKey:kNotesId];
+        [self cacheNote:localEditedNote in:kNotesEdited];
+        [self deleteChachedNoteWithId:localNoteId from:kNotesEdited];
+    }
+
+}
+
 - (NSOperation*) deleteNoteFromServer: (NSString*) noteId
 {
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
@@ -323,13 +334,9 @@
                                    [self deleteChachedNoteWithId:localNoteId from:kNotesAdded];
                                    
                                    // if note was created and edited offline, replace offline UUID with server generated id
-                                   NSMutableDictionary* localEditedNote = [NSMutableDictionary dictionaryWithDictionary:[self fetchNoteWithId:localNoteId fromCache:kNotesEdited]];
-                                   if (localEditedNote) {
-                                       NSString* serverId = [(NSDictionary*) responseObject valueForKey:kNotesId];
-                                       [localEditedNote setValue:serverId forKey:kNotesId];
-                                       [self cacheNote:localEditedNote in:kNotesEdited];
-                                       [self deleteChachedNoteWithId:localNoteId from:kNotesEdited];
-                                   }
+                                   [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesEdited];
+                                   // same goes with deleted
+                                   [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesRemoved];
                                }
                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                    NSLog(@"Error: %@", error);
