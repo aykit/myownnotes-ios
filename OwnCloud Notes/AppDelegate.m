@@ -256,6 +256,14 @@
     [userDefaults synchronize];
 }
 
+- (NSDictionary*) fetchNoteWithId:(NSString*) noteId fromCache:(NSString*) cacheConstant
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSArray* cachedArray = [userDefaults valueForKey:cacheConstant];
+    NSArray* filteredArray = [cachedArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"id==%@", noteId]];
+    return [filteredArray firstObject];
+}
+
 - (void) cacheNote:(NSDictionary*) note in:(NSString*) cacheConstant
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
@@ -310,8 +318,18 @@
     NSDictionary* onlyContentDict = [NSDictionary dictionaryWithObject:content forKey:kNotesContent];
     return [_httpOperationManager POST:serverUrlString parameters:onlyContentDict
                                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                   
                                    [self insertNoteSorted:responseObject];
                                    [self deleteChachedNoteWithId:localNoteId from:kNotesAdded];
+                                   
+                                   // if note was created and edited offline, replace offline UUID with server generated id
+                                   NSMutableDictionary* localEditedNote = [NSMutableDictionary dictionaryWithDictionary:[self fetchNoteWithId:localNoteId fromCache:kNotesEdited]];
+                                   if (localEditedNote) {
+                                       NSString* serverId = [(NSDictionary*) responseObject valueForKey:kNotesId];
+                                       [localEditedNote setValue:serverId forKey:kNotesId];
+                                       [self cacheNote:localEditedNote in:kNotesEdited];
+                                       [self deleteChachedNoteWithId:localNoteId from:kNotesEdited];
+                                   }
                                }
                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                    NSLog(@"Error: %@", error);
