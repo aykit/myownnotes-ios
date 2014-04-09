@@ -64,7 +64,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
         NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
-        self.detailViewController.detailItem = [notesArray objectAtIndex: 0];
+        self.detailViewController.detailItem = [notesArray firstObject];
     }
 }
 
