@@ -25,10 +25,10 @@
         // Update the view.
         [self configureView];
     }
-
+    
     if (self.masterPopoverController != nil) {
         [self.masterPopoverController dismissPopoverAnimated:YES];
-    }        
+    }
 }
 
 - (void)configureView
@@ -110,31 +110,38 @@
         content = @"";
     }
     
-    NSString* noteId = nil;
-    
-    NSMutableDictionary* note = [NSMutableDictionary dictionary];
-    
-    if (self.detailItem) {
-        noteId = [self.detailItem valueForKey:kNotesId];
+    if ([[content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Content" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
     }
     else {
-        noteId = [[NSUUID UUID] UUIDString];
-        [note setValue:@YES forKey:kNoteIsNew];
+        
+        NSString* noteId = nil;
+        
+        NSMutableDictionary* note = [NSMutableDictionary dictionary];
+        
+        if (self.detailItem) {
+            noteId = [self.detailItem valueForKey:kNotesId];
+        }
+        else {
+            noteId = [[NSUUID UUID] UUIDString];
+            [note setValue:@YES forKey:kNoteIsNew];
+        }
+        
+        [note setValue:@YES forKey:kNoteIsOffline];
+        [note setValue:noteId forKey:kNotesId];
+        [note setValue:firstLine forKey:kNotesTitle];
+        [note setValue:content forKey:kNotesContent];
+        [note setValue:modifiedDate forKey:kNotesModified];
+        
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
+                                                             forKey:kNotesNotificationItem];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
+        
+        
+        // Dismiss the modal view to return to the main list
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    
-    [note setValue:@YES forKey:kNoteIsOffline];
-    [note setValue:noteId forKey:kNotesId];
-    [note setValue:firstLine forKey:kNotesTitle];
-    [note setValue:content forKey:kNotesContent];
-    [note setValue:modifiedDate forKey:kNotesModified];
-    
-    NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
-                                                         forKey:kNotesNotificationItem];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
-    
-    
-    // Dismiss the modal view to return to the main list
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning
