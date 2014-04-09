@@ -182,21 +182,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RSj-UU-ldb">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RSj-UU-ldb">
                                 <rect key="frame" x="45" y="76" width="231" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="0.49948677007299269" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="avR-bR-rp9">
-                                <rect key="frame" x="20" y="105" width="280" height="443"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XEV-ha-aqp">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XEV-ha-aqp">
                                 <rect key="frame" x="278" y="75" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal">
@@ -206,8 +199,26 @@
                                     <action selector="showOfflineMessage:" destination="Ah7-4n-0Wa" eventType="touchUpInside" id="K5P-c8-Hkx"/>
                                 </connections>
                             </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avR-bR-rp9">
+                                <rect key="frame" x="20" y="105" width="280" height="443"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="RSj-UU-ldb" firstAttribute="top" secondItem="cIm-e0-J51" secondAttribute="bottom" constant="12" id="0Wq-ma-Qdk"/>
+                            <constraint firstAttribute="trailing" secondItem="RSj-UU-ldb" secondAttribute="trailing" constant="45" id="Bsd-qL-2jv"/>
+                            <constraint firstAttribute="trailing" secondItem="avR-bR-rp9" secondAttribute="trailing" constant="20" symbolic="YES" id="EFu-Bx-fTy"/>
+                            <constraint firstItem="RSj-UU-ldb" firstAttribute="leading" secondItem="MMQ-IT-qOo" secondAttribute="leading" constant="45" id="Kwu-Sl-xOo"/>
+                            <constraint firstItem="avR-bR-rp9" firstAttribute="leading" secondItem="MMQ-IT-qOo" secondAttribute="leading" constant="20" symbolic="YES" id="ZHN-0g-RwF"/>
+                            <constraint firstItem="avR-bR-rp9" firstAttribute="top" secondItem="XEV-ha-aqp" secondAttribute="bottom" constant="8" symbolic="YES" id="e7O-9w-hhz"/>
+                            <constraint firstAttribute="bottom" secondItem="avR-bR-rp9" secondAttribute="bottom" constant="20" id="kGO-ov-uYe"/>
+                            <constraint firstItem="avR-bR-rp9" firstAttribute="top" secondItem="RSj-UU-ldb" secondAttribute="bottom" constant="8" symbolic="YES" id="oID-pA-D6d"/>
+                            <constraint firstItem="avR-bR-rp9" firstAttribute="trailing" secondItem="XEV-ha-aqp" secondAttribute="trailing" id="yss-Me-jz7"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="cra-N8-TIN">
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="S8j-tX-hva">
@@ -217,7 +228,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="detailContentTextField" destination="avR-bR-rp9" id="lKv-KA-SyZ"/>
+                        <outlet property="detailContentTextView" destination="avR-bR-rp9" id="Gia-dO-m0w"/>
                         <outlet property="detailDateLabel" destination="RSj-UU-ldb" id="x1x-Z5-WhI"/>
                         <outlet property="offlineInfoButton" destination="XEV-ha-aqp" id="HhU-jc-MIx"/>
                     </connections>

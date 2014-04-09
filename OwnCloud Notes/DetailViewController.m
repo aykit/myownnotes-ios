@@ -46,7 +46,7 @@
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
         self.detailDateLabel.text = [dateFormat stringFromDate:date];
         
-        self.detailContentTextField.text = [self.detailItem valueForKey:kNotesContent];
+        self.detailContentTextView.text = [self.detailItem valueForKey:kNotesContent];
         
         if ([self.detailItem valueForKey:kNoteIsOffline]){
             self.offlineInfoButton.hidden = false;
@@ -56,7 +56,7 @@
         self.title = @"New Note";
         
         self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
-        self.detailContentTextField.text = @"";
+        self.detailContentTextView.text = @"";
     }
 }
 
@@ -64,19 +64,48 @@
 {
     [super viewDidLoad];
     
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+    
     [self configureView];
+}
+
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    float keyboardHeight = kbSize.width;
+    
+    if ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortrait ||
+        [UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown)
+    {
+        keyboardHeight = kbSize.height;
+    }
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardHeight, 0.0);
+    self.detailContentTextView.contentInset = contentInsets;
+    self.detailContentTextView.scrollIndicatorInsets = contentInsets;
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.detailContentTextView.contentInset = contentInsets;
+    self.detailContentTextView.scrollIndicatorInsets = contentInsets;
 }
 
 - (void) saveAndClose:(id)sender
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     
-    NSString* firstLine = [[self.detailContentTextField.text componentsSeparatedByString: @"\n"] firstObject];
+    NSString* firstLine = [[self.detailContentTextView.text componentsSeparatedByString: @"\n"] firstObject];
     if (!firstLine) {
         firstLine = @"New Note";
     }
     
-    NSString* content = self.detailContentTextField.text;
+    NSString* content = self.detailContentTextView.text;
     if (!content) {
         content = @"";
     }
@@ -118,7 +147,7 @@
 
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
-    barButtonItem.title = NSLocalizedString(@"Master", @"Master");
+    barButtonItem.title = NSLocalizedString(@"Notes", @"Notes");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }

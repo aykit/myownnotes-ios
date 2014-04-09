@@ -32,14 +32,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="703" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pQ8-eV-wEn">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pQ8-eV-wEn">
                                 <rect key="frame" x="49" y="76" width="604" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="0.49948677009999998" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sPM-oL-4rL">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sPM-oL-4rL">
                                 <rect key="frame" x="661" y="76" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal">
@@ -49,7 +49,7 @@
                                     <action selector="showOfflineMessage:" destination="JEX-9P-axG" eventType="touchUpInside" id="FN6-ig-X8l"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wWu-l8-veO">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wWu-l8-veO">
                                 <rect key="frame" x="20" y="105" width="663" height="643"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -58,6 +58,17 @@
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="sPM-oL-4rL" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="12" id="4tu-is-LPM"/>
+                            <constraint firstItem="pQ8-eV-wEn" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" constant="49" id="B6p-gW-crq"/>
+                            <constraint firstAttribute="trailing" secondItem="pQ8-eV-wEn" secondAttribute="trailing" constant="50" id="MW7-gh-sJD"/>
+                            <constraint firstItem="wWu-l8-veO" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" constant="20" id="NgY-ZB-ffm"/>
+                            <constraint firstItem="pQ8-eV-wEn" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="12" id="Ut4-af-YG3"/>
+                            <constraint firstItem="GAO-Cl-Wes" firstAttribute="top" secondItem="wWu-l8-veO" secondAttribute="bottom" constant="20" id="oAz-67-Xxo"/>
+                            <constraint firstItem="wWu-l8-veO" firstAttribute="top" secondItem="sPM-oL-4rL" secondAttribute="bottom" constant="7" id="sNe-ui-Mff"/>
+                            <constraint firstAttribute="trailing" secondItem="wWu-l8-veO" secondAttribute="trailing" constant="20" id="uAA-zr-hfE"/>
+                            <constraint firstItem="sPM-oL-4rL" firstAttribute="leading" secondItem="pQ8-eV-wEn" secondAttribute="trailing" constant="8" id="w4X-Oz-Lyy"/>
+                        </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems/>
@@ -69,7 +80,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="detailContentTextField" destination="wWu-l8-veO" id="tfC-rl-Q73"/>
+                        <outlet property="detailContentTextView" destination="wWu-l8-veO" id="heV-2H-1cD"/>
                         <outlet property="detailDateLabel" destination="pQ8-eV-wEn" id="SAK-bg-9Ht"/>
                         <outlet property="offlineInfoButton" destination="sPM-oL-4rL" id="gAf-e6-K8S"/>
                     </connections>
@@ -135,7 +146,7 @@
                             <outlet property="delegate" destination="7bK-jq-Zjz" id="RA6-mI-bju"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Master" id="Zdf-7t-Un8">
+                    <navigationItem key="navigationItem" title="Notes" id="Zdf-7t-Un8">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Woj-4h-R1A">
                             <connections>
                                 <action selector="createNote:" destination="7bK-jq-Zjz" id="VqU-qu-aF8"/>

@@ -13,7 +13,7 @@
 @property (strong, nonatomic) NSDictionary *detailItem;
 
 @property (weak, nonatomic) IBOutlet UILabel *detailDateLabel;
-@property (weak, nonatomic) IBOutlet UITextView *detailContentTextField;
+@property (weak, nonatomic) IBOutlet UITextView *detailContentTextView;
 @property (weak, nonatomic) IBOutlet UIButton *offlineInfoButton;
 
 - (IBAction)showOfflineMessage:(id)sender;
