@@ -102,10 +102,14 @@
         <!--Navigation Controller-->
         <scene sceneID="p7a-8p-N0Y">
             <objects>
-                <navigationController storyboardIdentifier="list" definesPresentationContext="YES" id="Fg6-b8-IbX" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="list" definesPresentationContext="YES" toolbarHidden="NO" id="Fg6-b8-IbX" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="IwA-hs-1EB">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="cbC-hR-a58">
+                        <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="pGg-6v-bdr" kind="relationship" relationship="rootViewController" id="0iq-08-l05"/>
                     </connections>
@@ -158,6 +162,13 @@
                             <outlet property="delegate" destination="pGg-6v-bdr" id="Y6K-Cp-Qkv"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem image="Settings" id="gSp-DT-mMJ">
+                            <connections>
+                                <segue destination="Jkb-Mf-EGf" kind="push" identifier="showSettings" id="VDr-E5-hlu"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="tQt-TN-PWz">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Y1t-l6-8YC">
                             <connections>
@@ -256,12 +267,16 @@
             <point key="canvasLocation" x="-70" y="720"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Settings" width="22" height="22"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="jUr-3t-vfg"/>
+        <segue reference="VDr-E5-hlu"/>
+        <segue reference="dIq-rW-xQ2"/>
     </inferredMetricsTieBreakers>
 </document>

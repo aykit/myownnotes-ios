@@ -25,7 +25,7 @@
 {
     
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults registerDefaults:@{kNotesRemoved: [NSArray array], kNotesEdited: [NSArray array], kNotesAdded: [NSArray array], kNotes: [NSArray array]}];
+    [userDefaults registerDefaults:@{kNotesServerURL: @"",kNotesRemoved: [NSArray array], kNotesEdited: [NSArray array], kNotesAdded: [NSArray array], kNotes: [NSArray array]}];
     [userDefaults synchronize];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -41,7 +41,7 @@
     // to guarantee correct create/update order we must store changes sequentially
     [_httpOperationManager.operationQueue setMaxConcurrentOperationCount:1];
     
-    BOOL isLoggedIn = [[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL] != nil;
+    BOOL isLoggedIn = ![[[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL] isEqualToString:@""];
     
     NSString *storyboardId = isLoggedIn ? @"list" : @"settings";
     
@@ -254,8 +254,6 @@
     if (lastOperation) {
         [lastOperation addDependency:newOperation];
     }
-    
-    NSLog(@"%@", [_httpOperationManager.operationQueue operations]);
 }
 
 - (void)persistNotes

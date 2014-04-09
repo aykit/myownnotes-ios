@@ -61,6 +61,12 @@
         [alert show];
     }
     else {
+        // reset local cache and settings
+        NSDictionary *defaultsDictionary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+        for (NSString *key in [defaultsDictionary allKeys]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+        }
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
         NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", self.serverTextField.text, kServerPath];
         

@@ -181,18 +181,20 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    DetailViewController* nextViewController = [segue destinationViewController];
-    
-    NSDictionary* note = nil;
-    
-    if ([[segue identifier] isEqualToString:@"editNote"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    if ([[segue identifier] isEqualToString:@"addNote"] ||[[segue identifier] isEqualToString:@"editNote"]) {
+        DetailViewController* nextViewController = [segue destinationViewController];
         
-        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
-        note = [notesArray objectAtIndex: indexPath.row];
+        NSDictionary* note = nil;
+        
+        if ([[segue identifier] isEqualToString:@"editNote"]) {
+            NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+            
+            NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+            note = [notesArray objectAtIndex: indexPath.row];
+        }
+        
+        [nextViewController setDetailItem:note];
     }
-    
-    [nextViewController setDetailItem:note];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -215,7 +217,7 @@
     else {
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
-        
+    
     
     NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
