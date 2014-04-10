@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>A3E516CD-D380-4B09-BB25-007F019409A1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>OwnCloud Notes</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>30FE5D82-3DED-4EB6-BF3D-450D8563F232</key>
+		<string>ssh://git.gerade.org/aykit-notes/ios-app.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>OwnCloud Notes.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>30FE5D82-3DED-4EB6-BF3D-450D8563F232</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://git.gerade.org/aykit-notes/ios-app.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>30FE5D82-3DED-4EB6-BF3D-450D8563F232</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>30FE5D82-3DED-4EB6-BF3D-450D8563F232</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OwnCloud Notes</string>
+		</dict>
+	</array>
+</dict>
+</plist>

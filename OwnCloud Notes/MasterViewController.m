@@ -8,14 +8,25 @@
 
 #import "MasterViewController.h"
 
+#import "SettingsViewController.h"
 #import "DetailViewController.h"
-#import "Note.h"
+#import "AppDelegate.h"
+#import "AFNetworking.h"
 
 @interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
+
+- (void)fetchData;
 @end
 
+
 @implementation MasterViewController
+
+- (void)fetchData
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self];
+}
 
 - (void)awakeFromNib
 {
@@ -29,10 +40,32 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    [(AppDelegate*)[[UIApplication sharedApplication] delegate] addObserver:self forKeyPath:@"notes" options:0 context:nil];
+    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
+    
+    self.refreshControl = [[UIRefreshControl alloc]
+                           init];
+    [self.refreshControl addTarget:self action:@selector(fetchData) forControlEvents:UIControlEventValueChanged];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:kNotesDidUpdateNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        [self.refreshControl endRefreshing];
+    }];
+    
+    
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+    [self fetchData];
+}
+
+- (void) viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        
+        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+        self.detailViewController.detailItem = [notesArray firstObject];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -41,17 +74,54 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    NSIndexSet *indices = [change objectForKey:NSKeyValueChangeIndexesKey];
+    if (indices == nil)
+        return; // Nothing to do
+    
+    
+    // Build index paths from index sets
+    NSUInteger indexCount = [indices count];
+    NSUInteger buffer[indexCount];
+    [indices getIndexes:buffer maxCount:indexCount inIndexRange:nil];
+    
+    NSMutableArray *indexPathArray = [NSMutableArray array];
+    for (int i = 0; i < indexCount; i++) {
+        NSUInteger indexPathIndices[2];
+        indexPathIndices[0] = 0;
+        indexPathIndices[1] = buffer[i];
+        NSIndexPath *newPath = [NSIndexPath indexPathWithIndexes:indexPathIndices length:2];
+        [indexPathArray addObject:newPath];
+    }
+    
+    NSNumber *kind = [change objectForKey:NSKeyValueChangeKindKey];
+    if ([kind integerValue] == NSKeyValueChangeInsertion)  // Rows were added
+        [self.tableView insertRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+    else if ([kind integerValue] == NSKeyValueChangeRemoval)  // Rows were removed
+        [self.tableView deleteRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+    
+}
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [[self.fetchedResultsController sections] count];
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
+    return [[(AppDelegate*)[[UIApplication sharedApplication] delegate] notes] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -63,215 +133,95 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
-        NSError *error = nil;
-        if (![context save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }   
+        NSDictionary* note = [[(AppDelegate*)[[UIApplication sharedApplication] delegate] notes] objectAtIndex:indexPath.row];
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObject:note
+                                                             forKey:kNotesNotificationDeleteItem];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // The table view should not be re-orderable.
     return NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        Note *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = object;
+        NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+        self.detailViewController.detailItem = [notesArray objectAtIndex: indexPath.row];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+    NSDictionary* note = [notesArray objectAtIndex:indexPath.row];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[note valueForKey:kNotesTitle]
+                                                    message:@"This note is not yet synched with the server"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+- (IBAction)createNote:(id)sender
+{
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        self.detailViewController.detailItem = nil;
     }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSManagedObjectContext *editContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [editContext setParentContext:self.managedObjectContext];
-    
-    DetailViewController* nextViewController = [segue destinationViewController];
-    nextViewController.delegate = self;
-
-    nextViewController.managedObjectContext = editContext;
-    
-    Note* note;
-    
-    if ([[segue identifier] isEqualToString:@"addNote"]) {
-        note = (Note *)[NSEntityDescription insertNewObjectForEntityForName:@"Note" inManagedObjectContext:editContext];
-        note.modified = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
-    }
-    
-    if ([[segue identifier] isEqualToString:@"editNote"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        note = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-    }
-    
-    [nextViewController setDetailItem:note];
-    
-    
-}
-
-#pragma mark - Fetched results controller
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Note" inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
-    
-    // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modified" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-	NSError *error = nil;
-	if (![self.fetchedResultsController performFetch:&error]) {
-	     // Replace this implementation with code to handle the error appropriately.
-	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
-	}
-    
-    return _fetchedResultsController;
-}    
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView beginUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-{
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
+    if ([[segue identifier] isEqualToString:@"addNote"] ||[[segue identifier] isEqualToString:@"editNote"]) {
+        DetailViewController* nextViewController = [segue destinationViewController];
+        
+        NSDictionary* note = nil;
+        
+        if ([[segue identifier] isEqualToString:@"editNote"]) {
+            NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
             
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
+            NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
+            note = [notesArray objectAtIndex: indexPath.row];
+        }
+        
+        [nextViewController setDetailItem:note];
     }
 }
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    UITableView *tableView = self.tableView;
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView endUpdates];
-}
-
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     
-    Note *note = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = note.title;
-    NSNumber *unixtimestamp = note.modified;
-    NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
-    cell.detailTextLabel.text = [dateFormat stringFromDate:date];
-}
-
-# pragma mark - Delegation
-
-/*
- Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new book.
- */
-- (void)detailViewController:(DetailViewController *)controller didFinishWithSave:(BOOL)save {
+    NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
     
-    if (save) {
-        /*
-         The new book is associated with the add controller's managed object context.
-         This means that any edits that are made don't affect the application's main managed object context -- it's a way of keeping disjoint edits in a separate scratchpad. Saving changes to that context, though, only push changes to the fetched results controller's context. To save the changes to the persistent store, you have to save the fetch results controller's context as well.
-         */
-        NSError *error;
-        NSManagedObjectContext *editManagedObjectContext = [controller managedObjectContext];
-        if (![editManagedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        if (![[self.fetchedResultsController managedObjectContext] save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
+    NSDictionary* note = [notesArray objectAtIndex: indexPath.row];
+    
+    if ([note valueForKey:kNotesTitle]) {
+        cell.textLabel.text = [note valueForKey: kNotesTitle];
+        [cell.textLabel sizeToFit];
     }
     
-    // Dismiss the modal view to return to the main list
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([note valueForKey:kNoteIsOffline]) {
+        [cell setAccessoryType:UITableViewCellAccessoryDetailDisclosureButton];
+    }
+    else {
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    }
+    
+    
+    NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
+    NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
+    cell.detailTextLabel.text = [dateFormat stringFromDate:date];
 }
 
 @end

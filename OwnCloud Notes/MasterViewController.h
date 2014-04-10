@@ -10,13 +10,10 @@
 
 #import "DetailViewController.h"
 
-#import <CoreData/CoreData.h>
-
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, DetailViewControllerDelegate>
+@interface MasterViewController : UITableViewController
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+- (IBAction)createNote:(id)sender;
 
 @end
