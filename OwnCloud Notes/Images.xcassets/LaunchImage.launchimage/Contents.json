@@ -12,7 +12,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "launchImage.png",
+      "filename" : "launchImage-2.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -44,7 +44,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "launchImage-1.png",
+      "filename" : "launchImage.png",
       "scale" : "2x"
     }
   ],

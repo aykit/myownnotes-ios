@@ -227,9 +227,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DDC085818DD909E0062CC13 /* Your own Notes */ = {
+		8DDC085818DD909E0062CC13 /* My Own Notes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8DDC089718DD909E0062CC13 /* Build configuration list for PBXNativeTarget "Your own Notes" */;
+			buildConfigurationList = 8DDC089718DD909E0062CC13 /* Build configuration list for PBXNativeTarget "My Own Notes" */;
 			buildPhases = (
 				FC0301AA0E6F4D9F8EDCAE26 /* Check Pods Manifest.lock */,
 				8DDC085518DD909E0062CC13 /* Sources */,
@@ -241,7 +241,7 @@
 			);
 			dependencies = (
 			);
-			name = "Your own Notes";
+			name = "My Own Notes";
 			productName = "OwnCloud Notes";
 			productReference = 8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */;
 			productType = "com.apple.product-type.application";
@@ -294,7 +294,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DDC085818DD909E0062CC13 /* Your own Notes */,
+				8DDC085818DD909E0062CC13 /* My Own Notes */,
 				8DDC088418DD909E0062CC13 /* OwnCloud NotesTests */,
 			);
 		};
@@ -386,7 +386,7 @@
 /* Begin PBXTargetDependency section */
 		8DDC088C18DD909E0062CC13 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8DDC085818DD909E0062CC13 /* Your own Notes */;
+			target = 8DDC085818DD909E0062CC13 /* My Own Notes */;
 			targetProxy = 8DDC088B18DD909E0062CC13 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -587,7 +587,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8DDC089718DD909E0062CC13 /* Build configuration list for PBXNativeTarget "Your own Notes" */ = {
+		8DDC089718DD909E0062CC13 /* Build configuration list for PBXNativeTarget "My Own Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8DDC089818DD909E0062CC13 /* Debug */,

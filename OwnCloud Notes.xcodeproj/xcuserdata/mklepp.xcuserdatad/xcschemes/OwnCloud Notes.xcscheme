@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8DDC085818DD909E0062CC13"
                BuildableName = "OwnCloud Notes.app"
-               BlueprintName = "Your own Notes"
+               BlueprintName = "My Own Notes"
                ReferencedContainer = "container:OwnCloud Notes.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,7 +44,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DDC085818DD909E0062CC13"
             BuildableName = "OwnCloud Notes.app"
-            BlueprintName = "Your own Notes"
+            BlueprintName = "My Own Notes"
             ReferencedContainer = "container:OwnCloud Notes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,7 +63,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DDC085818DD909E0062CC13"
             BuildableName = "OwnCloud Notes.app"
-            BlueprintName = "Your own Notes"
+            BlueprintName = "My Own Notes"
             ReferencedContainer = "container:OwnCloud Notes.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -81,7 +81,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DDC085818DD909E0062CC13"
             BuildableName = "OwnCloud Notes.app"
-            BlueprintName = "Your own Notes"
+            BlueprintName = "My Own Notes"
             ReferencedContainer = "container:OwnCloud Notes.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
