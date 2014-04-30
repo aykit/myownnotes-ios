@@ -217,9 +217,7 @@
     else {
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
-    
-    
-    NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
+        NSNumber *unixtimestamp = [note valueForKey:kNotesModified];
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[unixtimestamp integerValue]];
     cell.detailTextLabel.text = [dateFormat stringFromDate:date];
 }
