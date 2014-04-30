@@ -53,7 +53,7 @@
 		8D824A6918E2E06200A4B0D5 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		8DABE43A18E4391C00170AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OwnCloud Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DDC085918DD909E0062CC13 /* My Own Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Own Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DDC085C18DD909E0062CC13 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8DDC085E18DD909E0062CC13 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8DDC086018DD909E0062CC13 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -159,7 +159,7 @@
 		8DDC085A18DD909E0062CC13 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */,
+				8DDC085918DD909E0062CC13 /* My Own Notes.app */,
 				8DDC088518DD909E0062CC13 /* OwnCloud NotesTests.xctest */,
 			);
 			name = Products;
@@ -243,7 +243,7 @@
 			);
 			name = "My Own Notes";
 			productName = "OwnCloud Notes";
-			productReference = 8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */;
+			productReference = 8DDC085918DD909E0062CC13 /* My Own Notes.app */;
 			productType = "com.apple.product-type.application";
 		};
 		8DDC088418DD909E0062CC13 /* OwnCloud NotesTests */ = {
