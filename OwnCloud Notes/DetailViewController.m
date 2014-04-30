@@ -53,7 +53,7 @@
         }
     }
     else {
-        self.title = @"New Note";
+        self.title = NSLocalizedString(@"New Note", @"Default Title");
         
         self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
         self.detailContentTextView.text = @"";
