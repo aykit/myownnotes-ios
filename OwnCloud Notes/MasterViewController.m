@@ -165,9 +165,9 @@
     NSArray* notesArray = [(AppDelegate*)[[UIApplication sharedApplication] delegate] notes];
     NSDictionary* note = [notesArray objectAtIndex:indexPath.row];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[note valueForKey:kNotesTitle]
-                                                    message:@"This note is not yet synched with the server"
+                                                    message:NSLocalizedString(@"This note is not yet synched with the server", @"Offline Message")
                                                    delegate:nil
-                                          cancelButtonTitle:@"OK"
+                                          cancelButtonTitle:NSLocalizedString(@"OK",@"OK")
                                           otherButtonTitles:nil];
     [alert show];
 }

@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  OwnCloud Notes
+
+  Created by Markus Klepp on 30/04/14.
+  Copyright (c) 2014 AyKit. All rights reserved.
+*/
+
+/* Error */
+"Error" = "Fehler";
+
+/* Default Title */
+"New Note" = "Neue Notiz";
+
+/* No Content warning */
+"No Content" = "Kein Inhalt";
+
+/* Notes */
+"Notes" = "Notizen";
+
+/* Offline title */
+"Offline" = "Offline";
+
+/* OK */
+"OK" = "OK";
+
+/* Setup success message */
+"Owncloud found" = "Owncloud gefunden";
+
+/* Setup error message */
+"Please check your network connection and settings" = "Bitte überprüfe deine Netzwerkverbindung und Einstellungen";
+
+/* Setup message */
+"Please enter a server name" = "Bitte gib einen Servernamen an";
+
+/* Success title */
+"Success" = "Erfolg";
+
+/* Offline Message */
+"This note is not yet synched with the server" = "Diese Notiz ist noch nicht synchronisiert";
+

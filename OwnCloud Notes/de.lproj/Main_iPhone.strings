@@ -1,0 +1,24 @@
+
+/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "0EX-YG-Oms"; */
+"0EX-YG-Oms.placeholder" = "Passwort";
+
+/* Class = "IBUITextField"; placeholder = "http://www.example.com/owncloud"; ObjectID = "2Ct-y7-tA3"; */
+"2Ct-y7-tA3.placeholder" = "http://www.example.com/owncloud";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "2pz-XF-uhl"; */
+"2pz-XF-uhl.text" = "Titel";
+
+/* Class = "IBUITableViewController"; title = "Login"; ObjectID = "Jkb-Mf-EGf"; */
+"Jkb-Mf-EGf.title" = "Login";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Server"; ObjectID = "MaZ-lG-eUK"; */
+"MaZ-lG-eUK.headerTitle" = "Server";
+
+/* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "XiV-Lp-OXa"; */
+"XiV-Lp-OXa.placeholder" = "Username";
+
+/* Class = "IBUINavigationItem"; title = "Login"; ObjectID = "n0f-w7-Hyl"; */
+"n0f-w7-Hyl.title" = "Login";
+
+/* Class = "IBUILabel"; text = "Date"; ObjectID = "zbz-mt-2Mg"; */
+"zbz-mt-2Mg.text" = "Datum";

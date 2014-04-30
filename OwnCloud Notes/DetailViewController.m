@@ -53,7 +53,7 @@
         }
     }
     else {
-        self.title = @"New Note";
+        self.title = NSLocalizedString(@"New Note", @"Default Title");
         
         self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
         self.detailContentTextView.text = @"";
@@ -102,7 +102,7 @@
     
     NSString* firstLine = [[self.detailContentTextView.text componentsSeparatedByString: @"\n"] firstObject];
     if (!firstLine) {
-        firstLine = @"New Note";
+        firstLine = NSLocalizedString(@"New Note", @"Default Title");
     }
     
     NSString* content = self.detailContentTextView.text;
@@ -111,7 +111,7 @@
     }
     
     if ([[content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Content" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Content", @"No Content warning") message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
         [alert show];
     }
     else {
@@ -168,10 +168,10 @@
 
 -(IBAction)showOfflineMessage:(id)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Offline"
-                                                    message:@"This note is not yet synched with the server"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Offline", @"Offline title")
+                                                    message:NSLocalizedString(@"This note is not yet synched with the server", @"Offline Message")
                                                    delegate:nil
-                                          cancelButtonTitle:@"OK"
+                                          cancelButtonTitle:NSLocalizedString(@"OK",@"OK")
                                           otherButtonTitles:nil];
     [alert show];
 }
