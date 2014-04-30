@@ -46,8 +46,6 @@
     NSString *storyboardId = isLoggedIn ? @"list" : @"settings";
     
     self.window.rootViewController = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:storyboardId];
-    [self.window makeKeyAndVisible];
-    
     
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
