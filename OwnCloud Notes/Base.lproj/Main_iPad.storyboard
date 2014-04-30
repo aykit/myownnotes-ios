@@ -200,7 +200,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="HKp-Qi-ITS"/>
                     <connections>
-                        <segue destination="sQl-Ty-hWD" kind="modal" identifier="settingsSegue" modalPresentationStyle="formSheet" id="HRz-Hg-Xm5"/>
+                        <segue destination="sQl-Ty-hWD" kind="modal" identifier="settingsSegue" modalPresentationStyle="formSheet" animates="NO" id="HRz-Hg-Xm5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KkR-Y6-ndR" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -215,7 +215,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                         <sections>
                             <tableViewSection id="Dha-gT-0by">
                                 <cells>
@@ -373,6 +372,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="GXz-Hw-IYO"/>
+        <segue reference="HRz-Hg-Xm5"/>
     </inferredMetricsTieBreakers>
 </document>
