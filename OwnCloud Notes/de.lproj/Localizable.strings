@@ -28,7 +28,10 @@
 "Owncloud found" = "Owncloud gefunden";
 
 /* Setup error message */
-"Please check your network connection and settings" = "Bitte überprüfe deine Netzwerkverbindung und Einstellungen";
+"Check connection and settings" = "Bitte überprüfe die Netzwerkverbindung und Einstellungen.\n\nBenutzt du ein selbst signiertes Zertifikat, dann lies dir bitte die Information in der verlinkten Anleitung durch.";
+
+/* Unsigned Cert info */
+"Link to guideline" = "Anleitung";
 
 /* Setup message */
 "Please enter a server name" = "Bitte gib einen Servernamen an";

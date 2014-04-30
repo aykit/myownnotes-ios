@@ -113,12 +113,25 @@
                 [self presentViewController:listRootVC animated:YES completion:nil];
             }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"Please check your network connection and settings", @"Setup error message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"Check connection and settings", @"Setup error message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:NSLocalizedString(@"Link to guideline", @"Unsigned Cert info"), nil];
+
             [alert show];
         }];
         
     }
-    
+}
+
+# pragma mark - AlertView Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 1:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://aykit.org/myownnotes-ios.html"]];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 # pragma mark - TableView Delegate
