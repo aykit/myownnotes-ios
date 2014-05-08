@@ -28,7 +28,7 @@
 "Owncloud found" = "Owncloud found";
 
 /* Setup error message */
-"Check connection and settings" = "Please check your network connection and settings. When using a self signed certificate, please follow the linked guideline.";
+"Check connection and settings" = "Please check your network connection and settings.\n\nWhen using a self signed certificate, please follow the linked guideline.";
 
 /* Unsigned Cert info */
 "Link to guideline" = "Self Signed Guide";

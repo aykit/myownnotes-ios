@@ -15,7 +15,7 @@
 "MaZ-lG-eUK.headerTitle" = "Server";
 
 /* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "XiV-Lp-OXa"; */
-"XiV-Lp-OXa.placeholder" = "Username";
+"XiV-Lp-OXa.placeholder" = "Benutzername";
 
 /* Class = "IBUINavigationItem"; title = "Login"; ObjectID = "n0f-w7-Hyl"; */
 "n0f-w7-Hyl.title" = "Login";

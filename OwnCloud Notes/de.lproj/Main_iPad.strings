@@ -15,19 +15,19 @@
 "R4L-Cg-G9o.headerTitle" = "Server";
 
 /* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "Yf3-hC-IG2"; */
-"Yf3-hC-IG2.placeholder" = "Username";
+"Yf3-hC-IG2.placeholder" = "Benutzername";
 
 /* Class = "IBUINavigationItem"; title = "Notes"; ObjectID = "Zdf-7t-Un8"; */
 "Zdf-7t-Un8.title" = "Notizen";
 
 /* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "esX-sH-AYi"; */
-"esX-sH-AYi.placeholder" = "Password";
+"esX-sH-AYi.placeholder" = "Passwort";
 
 /* Class = "IBUILabel"; text = "Connect"; ObjectID = "nUV-AX-4L7"; */
-"nUV-AX-4L7.text" = "Connect";
+"nUV-AX-4L7.text" = "Verbinden";
 
 /* Class = "IBUINavigationItem"; title = "Login"; ObjectID = "omz-GV-L12"; */
-"omz-GV-L12.title" = "Login";
+"omz-GV-L12.title" = "Einloggen";
 
 /* Class = "IBUILabel"; text = "Date"; ObjectID = "ozX-1v-bnO"; */
 "ozX-1v-bnO.text" = "Datum";

@@ -2,7 +2,7 @@
   Localizable.strings
   OwnCloud Notes
 
-  Created by Markus Klepp on 30/04/14.
+  Erstellt von Markus Klepp am 30.04.2014.
   Copyright (c) 2014 AyKit. All rights reserved.
 */
 
@@ -28,7 +28,7 @@
 "Owncloud found" = "Owncloud gefunden";
 
 /* Setup error message */
-"Check connection and settings" = "Bitte überprüfe die Netzwerkverbindung und Einstellungen.\n\nBenutzt du ein selbst signiertes Zertifikat, dann lies dir bitte die Information in der verlinkten Anleitung durch.";
+"Check connection and settings" = "Bitte überprüfe die Netzwerkverbindung und Einstellungen.\n\nBei selbst signierten Zertifikaten, bitte die Information in der verlinkten Anleitung berücksichtigen.";
 
 /* Unsigned Cert info */
 "Link to guideline" = "Anleitung";
