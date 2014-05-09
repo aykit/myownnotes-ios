@@ -53,7 +53,7 @@
         }
     }
     else {
-        self.title = @"New Note";
+        self.title = NSLocalizedString(@"New Note", @"Default Title");
         
         self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
         self.detailContentTextView.text = @"";
@@ -63,7 +63,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
@@ -102,7 +101,7 @@
     
     NSString* firstLine = [[self.detailContentTextView.text componentsSeparatedByString: @"\n"] firstObject];
     if (!firstLine) {
-        firstLine = @"New Note";
+        firstLine = NSLocalizedString(@"New Note", @"Default Title");
     }
     
     NSString* content = self.detailContentTextView.text;
@@ -111,7 +110,7 @@
     }
     
     if ([[content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Content" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Content", @"No Content warning") message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
         [alert show];
     }
     else {
@@ -152,6 +151,11 @@
 
 #pragma mark - Split view
 
+- (BOOL) splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
+{
+    return NO;
+}
+
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
     barButtonItem.title = NSLocalizedString(@"Notes", @"Notes");
@@ -166,12 +170,14 @@
     self.masterPopoverController = nil;
 }
 
+#pragma mark - Offline Message
+
 -(IBAction)showOfflineMessage:(id)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Offline"
-                                                    message:@"This note is not yet synched with the server"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Offline", @"Offline title")
+                                                    message:NSLocalizedString(@"This note is not yet synched with the server", @"Offline Message")
                                                    delegate:nil
-                                          cancelButtonTitle:@"OK"
+                                          cancelButtonTitle:NSLocalizedString(@"OK",@"OK")
                                           otherButtonTitles:nil];
     [alert show];
 }

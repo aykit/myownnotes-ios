@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D72FC2D1910D90F00271CF1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D72FC2F1910D90F00271CF1 /* Localizable.strings */; };
 		8D824A6318E2DD6C00A4B0D5 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6218E2DD6C00A4B0D5 /* Constants.m */; };
 		8D824A6418E2DD6C00A4B0D5 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6218E2DD6C00A4B0D5 /* Constants.m */; };
 		8D824A6718E2DF4800A4B0D5 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D824A6618E2DF4800A4B0D5 /* SettingsViewController.m */; };
@@ -46,6 +47,15 @@
 
 /* Begin PBXFileReference section */
 		20CC4960476740E3AD8ED463 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		8D72FC2E1910D90F00271CF1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8D72FC301910D96F00271CF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8D72FC331910D97F00271CF1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8D72FC341910D97F00271CF1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		8D72FC351910D97F00271CF1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		8D72FC391910DB1900271CF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main_iPhone.strings; sourceTree = "<group>"; };
+		8D72FC3B1910DB1A00271CF1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main_iPhone.strings; sourceTree = "<group>"; };
+		8D72FC3D1910DC8E00271CF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main_iPad.strings; sourceTree = "<group>"; };
+		8D72FC3F1910DC8F00271CF1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main_iPad.strings; sourceTree = "<group>"; };
 		8D824A6118E2DD6000A4B0D5 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		8D824A6218E2DD6C00A4B0D5 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		8D824A6518E2DF4800A4B0D5 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -53,7 +63,7 @@
 		8D824A6918E2E06200A4B0D5 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		8D824A6A18E2E06200A4B0D5 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		8DABE43A18E4391C00170AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OwnCloud Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DDC085918DD909E0062CC13 /* My Own Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Own Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DDC085C18DD909E0062CC13 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8DDC085E18DD909E0062CC13 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8DDC086018DD909E0062CC13 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -106,6 +116,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8D72FC2A1910D82300271CF1 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				8D72FC2F1910D90F00271CF1 /* Localizable.strings */,
+			);
+			name = Localization;
+			sourceTree = "<group>";
+		};
 		8D824A6D18E3205E00A4B0D5 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,7 +177,7 @@
 		8DDC085A18DD909E0062CC13 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */,
+				8DDC085918DD909E0062CC13 /* My Own Notes.app */,
 				8DDC088518DD909E0062CC13 /* OwnCloud NotesTests.xctest */,
 			);
 			name = Products;
@@ -186,6 +204,7 @@
 				8DDC086E18DD909E0062CC13 /* AppDelegate.m */,
 				8D824A6118E2DD6000A4B0D5 /* Constants.h */,
 				8D824A6218E2DD6C00A4B0D5 /* Constants.m */,
+				8D72FC2A1910D82300271CF1 /* Localization */,
 				8D824AB918E320C500A4B0D5 /* Storyboards */,
 				8D824AB818E320B000A4B0D5 /* ViewControllers */,
 				8DDC087F18DD909E0062CC13 /* Images.xcassets */,
@@ -243,7 +262,7 @@
 			);
 			name = "My Own Notes";
 			productName = "OwnCloud Notes";
-			productReference = 8DDC085918DD909E0062CC13 /* OwnCloud Notes.app */;
+			productReference = 8DDC085918DD909E0062CC13 /* My Own Notes.app */;
 			productType = "com.apple.product-type.application";
 		};
 		8DDC088418DD909E0062CC13 /* OwnCloud NotesTests */ = {
@@ -288,6 +307,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 8DDC085018DD909E0062CC13;
 			productRefGroup = 8DDC085A18DD909E0062CC13 /* Products */;
@@ -305,6 +325,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D72FC2D1910D90F00271CF1 /* Localizable.strings in Resources */,
 				8DDC087518DD909E0062CC13 /* Main_iPad.storyboard in Resources */,
 				8DDC088018DD909E0062CC13 /* Images.xcassets in Resources */,
 				8DDC087218DD909E0062CC13 /* Main_iPhone.storyboard in Resources */,
@@ -392,10 +413,21 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		8D72FC2F1910D90F00271CF1 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8D72FC2E1910D90F00271CF1 /* Base */,
+				8D72FC301910D96F00271CF1 /* en */,
+				8D72FC331910D97F00271CF1 /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		8DDC086718DD909E0062CC13 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				8DDC086818DD909E0062CC13 /* en */,
+				8D72FC341910D97F00271CF1 /* de */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -404,6 +436,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				8DDC087118DD909E0062CC13 /* Base */,
+				8D72FC391910DB1900271CF1 /* en */,
+				8D72FC3B1910DB1A00271CF1 /* de */,
 			);
 			name = Main_iPhone.storyboard;
 			sourceTree = "<group>";
@@ -412,6 +446,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				8DDC087418DD909E0062CC13 /* Base */,
+				8D72FC3D1910DC8E00271CF1 /* en */,
+				8D72FC3F1910DC8F00271CF1 /* de */,
 			);
 			name = Main_iPad.storyboard;
 			sourceTree = "<group>";
@@ -420,6 +456,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				8DDC089118DD909E0062CC13 /* en */,
+				8D72FC351910D97F00271CF1 /* de */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
