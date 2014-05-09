@@ -126,7 +126,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 1:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://aykit.org/myownnotes-ios.html"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://aykit.org/sites/myownnotes.html"]];
             break;
             
         default:
