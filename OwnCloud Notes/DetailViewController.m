@@ -57,6 +57,8 @@
         
         self.detailDateLabel.text = [dateFormat stringFromDate:[NSDate date]];
         self.detailContentTextView.text = @"";
+        
+        [self.detailContentTextView becomeFirstResponder];
     }
 }
 

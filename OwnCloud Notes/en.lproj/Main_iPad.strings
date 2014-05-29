@@ -18,7 +18,7 @@
 "Yf3-hC-IG2.placeholder" = "Username";
 
 /* Class = "IBUINavigationItem"; title = "Notes"; ObjectID = "Zdf-7t-Un8"; */
-"Zdf-7t-Un8.title" = "Notes";
+"Zdf-7t-Un8.title" = "MyOwnNotes";
 
 /* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "esX-sH-AYi"; */
 "esX-sH-AYi.placeholder" = "Password";
