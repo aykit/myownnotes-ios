@@ -84,9 +84,6 @@
             [keychain setObject:self.passwordTextField.text forKey:(__bridge id)(kSecValueData)];
             [prefs synchronize];
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", @"Success title") message:NSLocalizedString(@"Owncloud found", @"Setup success message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
-            [alert show];
-            
             UIStoryboard *storyboard = self.storyboard;
             UIViewController* listRootVC = [storyboard instantiateViewControllerWithIdentifier:@"list"];
             
