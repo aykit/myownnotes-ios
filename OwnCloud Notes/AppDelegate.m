@@ -149,7 +149,22 @@
     [self insertObject:note inNotesAtIndex:newIndex];
 }
 
-- (void)updateData:(NSNotification *)note
+/**
+ A brief outline of the synch algorithm:
+ 
+ Prerequesites:
+ strict serial working queue (no simultaneous requests)
+ 
+ workflow:
+ -) cancel all pending requests (prevents multiple creation requests)
+ -) if there are cached new notes (created on device, but not on server), queue their requests
+ -) if there are cached updated notes (updated on device, but not on server), queue their requests
+ -) if there are cached deleted notes (deleted on device, but not on server), queue their requests
+ -) the notification param for the updateData method can contain a new created, updated or deleted note
+ -) if the notification param contains a note, cache them according to their status and enqueue the corresponding request
+ 
+**/
+- (void)updateData:(NSNotification *)notification
 {
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
     
@@ -191,7 +206,7 @@
         lastOperation = newOperation;
     }
     
-    NSDictionary *theData = [note userInfo];
+    NSDictionary *theData = [notification userInfo];
     if (theData != nil) {
         
         NSDictionary* deletedNote = [theData valueForKey:kNotesNotificationDeleteItem];
