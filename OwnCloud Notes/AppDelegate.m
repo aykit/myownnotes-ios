@@ -116,6 +116,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
     [self persistNotes];
 }
 
