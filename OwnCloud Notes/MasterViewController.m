@@ -43,8 +43,6 @@
     
     [(AppDelegate*)[[UIApplication sharedApplication] delegate] addObserver:self forKeyPath:@"notes" options:0 context:nil];
     
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    
     self.refreshControl = [[UIRefreshControl alloc]
                            init];
     [self.refreshControl addTarget:self action:@selector(fetchData) forControlEvents:UIControlEventValueChanged];
