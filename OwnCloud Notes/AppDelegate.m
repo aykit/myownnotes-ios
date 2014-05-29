@@ -35,13 +35,34 @@
     
     _httpOperationManager = [AFHTTPRequestOperationManager manager];
     
+    BOOL isLoggedIn = ![[userDefaults stringForKey:kNotesServerURL] isEqualToString:@""];
+    
+    if (isLoggedIn) {
+        NSURL* baseUrl = [NSURL URLWithString:[userDefaults stringForKey:kNotesServerURL]];
+        _httpOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseUrl];
+    }
+    
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
     _httpOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
     _httpOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     // to guarantee correct create/update order we must store changes sequentially
     [_httpOperationManager.operationQueue setMaxConcurrentOperationCount:1];
     
-    BOOL isLoggedIn = ![[[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL] isEqualToString:@""];
+    NSOperationQueue *operationQueue = _httpOperationManager.operationQueue;
+    [_httpOperationManager.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusReachableViaWWAN:
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                [operationQueue setSuspended:NO];
+                break;
+            case AFNetworkReachabilityStatusNotReachable:
+            default:
+                [operationQueue setSuspended:YES];
+                break;
+        }
+    }];
     
     NSString *storyboardId = isLoggedIn ? @"list" : @"settings";
     
