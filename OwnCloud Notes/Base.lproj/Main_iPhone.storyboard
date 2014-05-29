@@ -114,7 +114,7 @@
             </objects>
             <point key="canvasLocation" x="-82" y="64"/>
         </scene>
-        <!--Master View Controller-->
+        <!--Master View Controller - MyOwnNotes-->
         <scene sceneID="VgW-fR-Quf">
             <objects>
                 <tableViewController id="pGg-6v-bdr" customClass="MasterViewController" sceneMemberID="viewController">
@@ -159,7 +159,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="tQt-TN-PWz">
+                    <navigationItem key="navigationItem" title="MyOwnNotes" id="tQt-TN-PWz">
                         <barButtonItem key="leftBarButtonItem" image="Settings" id="gSp-DT-mMJ">
                             <connections>
                                 <segue destination="Jkb-Mf-EGf" kind="push" identifier="showSettings" id="VDr-E5-hlu"/>

@@ -148,7 +148,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Notes" id="Zdf-7t-Un8">
+                    <navigationItem key="navigationItem" title="MyOwnNotes" id="Zdf-7t-Un8">
                         <barButtonItem key="leftBarButtonItem" image="Settings" id="ZuT-BI-FMd">
                             <connections>
                                 <segue destination="sQl-Ty-hWD" kind="modal" identifier="showSettings" modalPresentationStyle="formSheet" id="GXz-Hw-IYO"/>
