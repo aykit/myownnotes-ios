@@ -166,6 +166,10 @@
 **/
 - (void)updateData:(NSNotification *)notification
 {
+    NSLog(@"cached requests: %lu", _httpOperationManager.operationQueue.operationCount);
+    [_httpOperationManager.operationQueue cancelAllOperations];
+    NSLog(@"cached requests after cancel: %lu", _httpOperationManager.operationQueue.operationCount);
+    
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
     
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotes accessGroup:nil];
@@ -288,6 +292,8 @@
     if (lastOperation) {
         [lastOperation addDependency:newOperation];
     }
+    
+    NSLog(@"cached requests after updateData-method: %lu", _httpOperationManager.operationQueue.operationCount);
 }
 
 - (void)persistNotes
