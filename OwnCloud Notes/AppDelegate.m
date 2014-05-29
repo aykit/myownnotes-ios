@@ -166,9 +166,7 @@
 **/
 - (void)updateData:(NSNotification *)notification
 {
-    NSLog(@"cached requests: %lu", _httpOperationManager.operationQueue.operationCount);
     [_httpOperationManager.operationQueue cancelAllOperations];
-    NSLog(@"cached requests after cancel: %lu", _httpOperationManager.operationQueue.operationCount);
     
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
     
