@@ -56,8 +56,17 @@
 
 - (IBAction)close:(id)sender
 {
-    if (self.serverTextField.text.length == 0){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"Please enter a server name",@"Setup message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
+    NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", self.serverTextField.text, kServerPath];
+    
+    NSURL* serverUrl = [NSURL URLWithString:serverUrlString];
+    
+    if (serverUrl == nil){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"Please enter a server url",@"Setup message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
+        [alert show];
+    }
+    else if (![@"https" isEqualToString:serverUrl.scheme]){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"We sincerely advice against using insecure connections. If you need help setting up SSL, we will gladly help out.",@"SSL only message") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") otherButtonTitles:NSLocalizedString(@"Mail us", @"SSL help mail"), nil];
+        alert.tag = 0;
         [alert show];
     }
     else {
@@ -68,7 +77,7 @@
         }
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", self.serverTextField.text, kServerPath];
+        
         
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         manager.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -112,6 +121,7 @@
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"Error") message:NSLocalizedString(@"Check connection and settings", @"Setup error message") delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:NSLocalizedString(@"Link to guideline", @"Unsigned Cert info"), nil];
 
+            alert.tag = 1;
             [alert show];
         }];
         
@@ -121,14 +131,31 @@
 # pragma mark - AlertView Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 1:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://aykit.org/sites/myownnotes.html"]];
+    switch ([alertView tag]) {
+        case 0:
+            switch (buttonIndex) {
+                case 1:
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto://z-o48hohw4l9qla@ay.vc?subject=MyOwnNotes%20SSL"]];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
-            
+        case 1:
+            switch (buttonIndex) {
+                case 1:
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://aykit.org/sites/myownnotes.html"]];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
         default:
             break;
     }
+    
 }
 
 # pragma mark - TableView Delegate

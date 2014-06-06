@@ -36,6 +36,12 @@
 /* Setup message */
 "Please enter a server name" = "Bitte gib einen Servernamen an";
 
+/* SSL only message */
+"We sincerely advice against using insecure connections. If you need help setting up SSL, we will gladly help out." = "Wir raten dringend davon ab, eine unsichere Verbindung zu verwenden. Wir helfen dir gerne weiter, wenn du Hilfe beim Einrichten von SSL benötigst.";
+
+/* SSL help mail */
+"Mail us" = "Maile uns";
+
 /* Success title */
 "Success" = "Erfolg";
 
