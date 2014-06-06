@@ -72,6 +72,15 @@
     [self configureView];
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // autosave Note when the note is new or when there are changes
+    if (!self.detailItem || (self.detailItem && ![self.detailContentTextView.text isEqualToString:[self.detailItem valueForKey:kNotesContent]])) {
+        [self saveNote];
+    }
+}
+
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
     NSDictionary* info = [aNotification userInfo];
@@ -97,7 +106,7 @@
     self.detailContentTextView.scrollIndicatorInsets = contentInsets;
 }
 
-- (void) saveAndClose:(id)sender
+- (BOOL) saveNote
 {
     NSNumber* modifiedDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
     
@@ -110,13 +119,11 @@
     if (!content) {
         content = @"";
     }
-    
+
     if ([[content stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Content", @"No Content warning") message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
-        [alert show];
+        return NO;
     }
     else {
-        
         NSString* noteId = nil;
         
         NSMutableDictionary* note = [NSMutableDictionary dictionary];
@@ -139,9 +146,21 @@
                                                              forKey:kNotesNotificationItem];
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotesShouldUpdateNotification object:self userInfo:dataDict];
         
-        
+        return YES;
+    }
+    
+    
+}
+
+- (void) saveAndClose:(id)sender
+{
+    if ([self saveNote]) {
         // Dismiss the modal view to return to the main list
         [self.navigationController popViewControllerAnimated:YES];
+    }
+    else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Content", @"No Content warning") message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil];
+        [alert show];
     }
 }
 
