@@ -72,6 +72,15 @@
     [self configureView];
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // autosave Note when the note is new or when there are changes
+    if (!self.detailItem || (self.detailItem && ![self.detailContentTextView.text isEqualToString:[self.detailItem valueForKey:kNotesContent]])) {
+        [self saveNote];
+    }
+}
+
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
     NSDictionary* info = [aNotification userInfo];
