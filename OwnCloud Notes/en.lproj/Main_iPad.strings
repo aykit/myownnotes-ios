@@ -2,8 +2,8 @@
 /* Class = "IBUITableViewController"; title = "Notes"; ObjectID = "7bK-jq-Zjz"; */
 "7bK-jq-Zjz.title" = "Notes";
 
-/* Class = "IBUITextField"; placeholder = "http://www.example.com/owncloud"; ObjectID = "Aau-86-3MR"; */
-"Aau-86-3MR.placeholder" = "http://www.example.com/owncloud";
+/* Class = "IBUITextField"; placeholder = "https://www.example.com/owncloud"; ObjectID = "Aau-86-3MR"; */
+"Aau-86-3MR.placeholder" = "https://www.example.com/owncloud";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "Arm-wq-HPj"; */
 "Arm-wq-HPj.text" = "Title";
@@ -18,7 +18,7 @@
 "Yf3-hC-IG2.placeholder" = "Username";
 
 /* Class = "IBUINavigationItem"; title = "Notes"; ObjectID = "Zdf-7t-Un8"; */
-"Zdf-7t-Un8.title" = "Notes";
+"Zdf-7t-Un8.title" = "MyOwnNotes";
 
 /* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "esX-sH-AYi"; */
 "esX-sH-AYi.placeholder" = "Password";

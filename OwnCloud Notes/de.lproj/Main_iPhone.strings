@@ -2,8 +2,8 @@
 /* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "0EX-YG-Oms"; */
 "0EX-YG-Oms.placeholder" = "Passwort";
 
-/* Class = "IBUITextField"; placeholder = "http://www.example.com/owncloud"; ObjectID = "2Ct-y7-tA3"; */
-"2Ct-y7-tA3.placeholder" = "http://www.example.com/owncloud";
+/* Class = "IBUITextField"; placeholder = "https://www.example.com/owncloud"; ObjectID = "2Ct-y7-tA3"; */
+"2Ct-y7-tA3.placeholder" = "https://www.example.com/owncloud";
 
 /* Class = "IBUILabel"; text = "Title"; ObjectID = "2pz-XF-uhl"; */
 "2pz-XF-uhl.text" = "Titel";
