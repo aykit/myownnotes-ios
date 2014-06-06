@@ -37,30 +37,9 @@
     [super awakeFromNib];
 }
 
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    UIColor* backgroundColor = self.navigationController.navigationBar.barTintColor;
-    if (backgroundColor == nil){
-        backgroundColor = [UIColor whiteColor];
-    }
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:backgroundColor]
-                             forBarMetrics:UIBarMetricsDefault];
     
     [(AppDelegate*)[[UIApplication sharedApplication] delegate] addObserver:self forKeyPath:@"notes" options:0 context:nil];
     
