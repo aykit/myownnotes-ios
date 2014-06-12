@@ -308,6 +308,7 @@
     return [_httpOperationManager DELETE:[NSString stringWithFormat:@"%@/%@", serverUrlString, noteId] parameters:nil
                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                      [self deleteCachedNoteWithId:noteId from:kNotesRemoved];
+                                      NSLog(@"Removed Note %@", noteId);
                                  }
                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                      if ([operation.response statusCode] == 404){
@@ -332,6 +333,7 @@
                                   [self removeNotesObject:[self noteWithId:[responseObject valueForKey:kNotesId]]];
                                   [self insertNoteSorted:responseObject];
                                   [self deleteCachedNoteWithId:noteId from:kNotesEdited];
+                                  NSLog(@"Updated Note %@", content);
                               }
                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                   NSLog(@"Update Request Error: %@", [error localizedDescription]);
@@ -353,6 +355,8 @@
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesEdited];
                                    // same goes with deleted
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesRemoved];
+                                   
+                                   NSLog(@"Created Note %@", content);
                                }
                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                    NSLog(@"Create Request Error: %@", [error localizedDescription]);
