@@ -35,13 +35,34 @@
     
     _httpOperationManager = [AFHTTPRequestOperationManager manager];
     
+    BOOL isLoggedIn = ![[userDefaults stringForKey:kNotesServerURL] isEqualToString:@""];
+    
+    if (isLoggedIn) {
+        NSURL* baseUrl = [NSURL URLWithString:[userDefaults stringForKey:kNotesServerURL]];
+        _httpOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseUrl];
+    }
+    
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
     _httpOperationManager.responseSerializer = [AFJSONResponseSerializer serializer];
     _httpOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     // to guarantee correct create/update order we must store changes sequentially
     [_httpOperationManager.operationQueue setMaxConcurrentOperationCount:1];
     
-    BOOL isLoggedIn = ![[[NSUserDefaults standardUserDefaults] stringForKey:kNotesServerURL] isEqualToString:@""];
+    NSOperationQueue *operationQueue = _httpOperationManager.operationQueue;
+    [_httpOperationManager.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusReachableViaWWAN:
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                [operationQueue setSuspended:NO];
+                break;
+            case AFNetworkReachabilityStatusNotReachable:
+            default:
+                [operationQueue setSuspended:YES];
+                break;
+        }
+    }];
     
     NSString *storyboardId = isLoggedIn ? @"list" : @"settings";
     
@@ -95,6 +116,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
     [self persistNotes];
 }
 
@@ -127,8 +149,25 @@
     [self insertObject:note inNotesAtIndex:newIndex];
 }
 
-- (void)updateData:(NSNotification *)note
+/**
+ A brief outline of the synch algorithm:
+ 
+ Prerequesites:
+ strict serial working queue (no simultaneous requests)
+ 
+ workflow:
+ -) cancel all pending requests (prevents multiple creation requests)
+ -) if there are cached new notes (created on device, but not on server), queue their requests
+ -) if there are cached updated notes (updated on device, but not on server), queue their requests
+ -) if there are cached deleted notes (deleted on device, but not on server), queue their requests
+ -) the notification param for the updateData method can contain a new created, updated or deleted note
+ -) if the notification param contains a note, cache them according to their status and enqueue the corresponding request
+ 
+**/
+- (void)updateData:(NSNotification *)notification
 {
+    [_httpOperationManager.operationQueue cancelAllOperations];
+    
     NSString* serverUrlString = [NSString stringWithFormat:@"%@%@", [[NSUserDefaults standardUserDefaults] valueForKey:kNotesServerURL], kServerPath];
     
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:kNotes accessGroup:nil];
@@ -169,7 +208,7 @@
         lastOperation = newOperation;
     }
     
-    NSDictionary *theData = [note userInfo];
+    NSDictionary *theData = [notification userInfo];
     if (theData != nil) {
         
         NSDictionary* deletedNote = [theData valueForKey:kNotesNotificationDeleteItem];
@@ -251,6 +290,8 @@
     if (lastOperation) {
         [lastOperation addDependency:newOperation];
     }
+    
+    NSLog(@"cached requests after updateData-method: %lu", _httpOperationManager.operationQueue.operationCount);
 }
 
 - (void)persistNotes
@@ -308,6 +349,7 @@
     return [_httpOperationManager DELETE:[NSString stringWithFormat:@"%@/%@", serverUrlString, noteId] parameters:nil
                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                      [self deleteCachedNoteWithId:noteId from:kNotesRemoved];
+                                      NSLog(@"Removed Note %@", noteId);
                                  }
                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                      if ([operation.response statusCode] == 404){
@@ -332,6 +374,7 @@
                                   [self removeNotesObject:[self noteWithId:[responseObject valueForKey:kNotesId]]];
                                   [self insertNoteSorted:responseObject];
                                   [self deleteCachedNoteWithId:noteId from:kNotesEdited];
+                                  NSLog(@"Updated Note %@", content);
                               }
                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                   NSLog(@"Update Request Error: %@", [error localizedDescription]);
@@ -353,6 +396,8 @@
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesEdited];
                                    // same goes with deleted
                                    [self updateOfflineNoteId:localNoteId withId:[(NSDictionary*) responseObject valueForKey:kNotesId] in:kNotesRemoved];
+                                   
+                                   NSLog(@"Created Note %@", content);
                                }
                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                    NSLog(@"Create Request Error: %@", [error localizedDescription]);
